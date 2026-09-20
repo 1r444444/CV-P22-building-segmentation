@@ -24,11 +24,13 @@ train/validation/test split, and measures taken to prevent leakage.
 
 ## 3. Method
 
-**Baseline:** TBD.  
-**Comparison model or condition:** TBD.  
-**Controlled variables:** TBD.  
-**Training and inference procedure:** TBD.  
-**Ablation or sensitivity experiment:** TBD.
+- **Baseline:** TBD.
+- **Comparison model or condition:** TBD.
+- **Pretrained weights:** TBD.
+- **Important settings:** TBD.
+- **Controlled variables:** TBD.
+- **Training and inference procedure:** TBD.
+- **Ablation or sensitivity experiment:** TBD.
 
 ## 4. Results
 
@@ -56,9 +58,13 @@ are relevant to the observed results.
 
 TBD.
 
-Provide the environment, exact run commands, dataset preparation instructions,
-random seeds/settings where relevant, artifact locations, and hardware used for
-the reported runtime measurements.
+- **Repository:** https://github.com/1r444444/CV-P22-building-segmentation
+- **Environment:** TBD.
+- **Approximate runtime:** TBD.
+
+Provide exact run commands, dataset preparation instructions, random
+seeds/settings where relevant, artifact locations, and hardware used for the
+reported runtime measurements.
 
 ## 8. Members' Contributions
 

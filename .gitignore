@@ -228,12 +228,12 @@ datasets/
 *.7z
 
 # Model checkpoints and large experiment artifacts
-checkpoints/
-weights/
-models/
-runs/
-wandb/
-mlruns/
+/checkpoints/
+/weights/
+/models/
+/runs/
+/wandb/
+/mlruns/
 *.pt
 *.pth
 *.ckpt

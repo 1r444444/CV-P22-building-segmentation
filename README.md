@@ -24,15 +24,21 @@ Based on the official Computer Vision 2026 project guidelines, the project must:
 - document the train/validation/test split and prevent data leakage;
 - provide reproducible code or notebooks with clear run instructions;
 - document the environment and approximate training/inference time;
-- include a two-page technical summary and a demo;
+- include a two-page technical summary;
+- demonstrate the task, baseline, main comparison, and one failure case, with
+  no more than three presentation slides in addition to the live demo;
+- prepare each member for an individual Q&A about the project;
 - state each team member's contribution.
+
+The official guidelines mention both a five-minute demo and a 10-minute demo
+format. The final duration is TBD pending clarification from the instructors.
 
 For this project, the primary quantitative metrics are **IoU** and **Dice**.
 
 ## Repository Structure
 
 ```text
-CV-P22-project/
+CV-P22-building-segmentation/
 |-- README.md
 |-- REPRODUCIBILITY_CHECKLIST.md
 |-- requirements.txt
