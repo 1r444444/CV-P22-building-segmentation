@@ -1,0 +1,3 @@
+# Project dependencies are TBD.
+# Add exact packages and versions after the dataset and model code is finalized.
+# Format: package==version

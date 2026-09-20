@@ -1,0 +1,48 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Virtual environments and local environment files
+.venv/
+venv/
+env/
+.env
+.env.*
+
+# Local datasets and archives
+data/*
+!data/README.md
+datasets/
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+
+# Model checkpoints and large experiment artifacts
+checkpoints/
+weights/
+models/
+runs/
+wandb/
+mlruns/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Temporary and editor files
+.cache/
+tmp/
+temp/
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Lightweight final metrics and figures are intentionally not ignored.
