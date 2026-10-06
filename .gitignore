@@ -249,3 +249,7 @@ temp/
 .idea/
 
 # Lightweight final metrics and figures are intentionally not ignored.
+
+# heavy dataset and its raw data
+data/raw/
+data/processed/
