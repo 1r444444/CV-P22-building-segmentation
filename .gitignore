@@ -220,6 +220,9 @@ __marimo__/
 # Project datasets and archives
 data/*
 !data/README.md
+!data/splits/
+!data/splits/*.csv
+
 datasets/
 *.zip
 *.tar
