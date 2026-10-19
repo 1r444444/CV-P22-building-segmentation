@@ -154,8 +154,9 @@ Probability archives contain `probabilities` (N,1,256,256), `image_paths`,
 `mask_paths`, `source_images` and `patch_indices` in CSV order. Person 3 can
 recompute metrics, adjust thresholds and select failures from these outputs or
 the checkpoint without retraining. Large artifacts need a separate handoff;
-they are not present in a Git clone. Download the recorded run's large artifacts
-from the [comparison release](https://github.com/1r444444/CV-P22-building-segmentation/releases/tag/comparison-bce-dice-2026-10-19):
+they are not present in a Git clone. The checkpoint and caches currently remain
+local. The planned [comparison release](https://github.com/1r444444/CV-P22-building-segmentation/releases/tag/comparison-bce-dice-2026-10-19)
+has not been published. After publication, download its artifacts with:
 
 ```bash
 gh release download comparison-bce-dice-2026-10-19 \
@@ -166,8 +167,9 @@ gh release download comparison-bce-dice-2026-10-19 \
   --pattern val.npz --pattern test.npz --dir results/comparison_probabilities
 ```
 
-The release also includes `comparison_artifact_checksums.txt`. The checkpoint's
-SHA-256 is recorded independently in `results/metrics/comparison_run.json`.
+The prepared release assets also include `comparison_artifact_checksums.txt`
+under `.cache/release/`. The checkpoint's SHA-256 is recorded independently in
+`results/metrics/comparison_run.json`.
 
 Training time includes epoch validation and checkpoint writes. Test evaluation
 time includes data loading, forward passes, loss and metrics; it is not isolated
@@ -214,5 +216,6 @@ To rebuild the report with Tectonic from the repository root:
 tectonic --outdir report report/SecondApproachSubmission_P22.tex
 ```
 
-The executed notebook, lightweight outputs and report are supplied on
-`experiment/bce-dice-comparison`; the large artifacts are in the linked release.
+The executed notebook, lightweight outputs and report are committed locally on
+`experiment/bce-dice-comparison`. Publication of the branch and large-artifact
+release is pending.
