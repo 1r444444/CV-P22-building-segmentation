@@ -238,5 +238,4 @@ tectonic --outdir report report/SecondApproachSubmission_P22.tex
 ```
 
 The development branch is `experiment/bce-dice-comparison`; the team's integration
-branch is `main`. A ready-to-forward Russian handoff is in
-[COMPARISON_HANDOFF_RU.md](COMPARISON_HANDOFF_RU.md).
+branch is `main`.
