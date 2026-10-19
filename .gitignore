@@ -256,3 +256,7 @@ temp/
 # heavy dataset and its raw data
 data/raw/
 data/processed/
+
+# Person 2: complete float32 probability caches are local handoff artifacts.
+/results/comparison_probabilities/
+/.cache/
