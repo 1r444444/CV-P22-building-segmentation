@@ -1,0 +1,6 @@
+--extra-index-url https://download.pytorch.org/whl/cu130
+-r requirements.txt
+
+jupyterlab==4.6.4
+nbconvert==7.17.2
+ipykernel==7.4.0

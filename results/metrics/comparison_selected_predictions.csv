@@ -1,0 +1,9 @@
+split,source_image,patch_idx,image_path,mask_path,building_fraction,prediction_path
+test,22828930_15.png,0,data/processed/test/images/22828930_15_patch_00.png,data/processed/test/masks/22828930_15_patch_00.png,0.1006011962890625,results/predictions/comparison_prediction_00.png
+test,22828930_15.png,1,data/processed/test/images/22828930_15_patch_01.png,data/processed/test/masks/22828930_15_patch_01.png,0.1189117431640625,results/predictions/comparison_prediction_01.png
+test,22828930_15.png,2,data/processed/test/images/22828930_15_patch_02.png,data/processed/test/masks/22828930_15_patch_02.png,0.177032470703125,results/predictions/comparison_prediction_02.png
+test,22828930_15.png,3,data/processed/test/images/22828930_15_patch_03.png,data/processed/test/masks/22828930_15_patch_03.png,0.2225189208984375,results/predictions/comparison_prediction_03.png
+test,22828930_15.png,4,data/processed/test/images/22828930_15_patch_04.png,data/processed/test/masks/22828930_15_patch_04.png,0.215362548828125,results/predictions/comparison_prediction_04.png
+test,22828930_15.png,5,data/processed/test/images/22828930_15_patch_05.png,data/processed/test/masks/22828930_15_patch_05.png,0.1713409423828125,results/predictions/comparison_prediction_05.png
+test,22828930_15.png,6,data/processed/test/images/22828930_15_patch_06.png,data/processed/test/masks/22828930_15_patch_06.png,0.1586761474609375,results/predictions/comparison_prediction_06.png
+test,22828930_15.png,7,data/processed/test/images/22828930_15_patch_07.png,data/processed/test/masks/22828930_15_patch_07.png,0.1295013427734375,results/predictions/comparison_prediction_07.png

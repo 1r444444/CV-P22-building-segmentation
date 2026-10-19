@@ -256,3 +256,13 @@ temp/
 # heavy dataset and its raw data
 data/raw/
 data/processed/
+
+/results/comparison_probabilities/
+/.cache/
+/report/*.aux
+/report/*.out
+/report/*.toc
+/report/*.synctex.gz
+/report/*.xdv
+/report/*.fls
+/report/*.fdb_latexmk

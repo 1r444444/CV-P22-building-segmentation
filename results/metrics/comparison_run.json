@@ -1,0 +1,77 @@
+{
+  "status": "completed",
+  "started_utc": "2026-10-19T20:04:15.455413+00:00",
+  "completed_utc": "2026-10-19T20:09:38.353337+00:00",
+  "baseline_commit": "2c418ba",
+  "contributor": "Elena Tuturina",
+  "research_question": "Does BCE + soft Dice improve building IoU/Dice over BCE?",
+  "changed_factor": "loss",
+  "loss": "BCEWithLogitsLoss + mean per-patch soft Dice loss",
+  "loss_coefficients": [
+    1,
+    1
+  ],
+  "dice_smooth": 1.0,
+  "architecture": "Unet",
+  "encoder": "resnet18",
+  "encoder_weights": "imagenet",
+  "seed": 42,
+  "batch_size": 8,
+  "epochs": 10,
+  "optimizer": "Adam",
+  "learning_rate": 0.001,
+  "threshold": 0.5,
+  "checkpoint_selection": "minimum validation combined loss",
+  "metric_aggregation": "global pixel totals; epsilon=1e-7",
+  "data": {
+    "train": {
+      "patches": 4932,
+      "original_images": 137,
+      "split_csv_sha256": "ad2ce6acf7b7008c0c7f78600616455a6d04aa7ac7b9cfdb942017070b60a814"
+    },
+    "val": {
+      "patches": 144,
+      "original_images": 4,
+      "split_csv_sha256": "f7f6314efeea50fa450dba6da03074464a8b74574b6dafb4f53366ef73169775"
+    },
+    "test": {
+      "patches": 360,
+      "original_images": 10,
+      "split_csv_sha256": "91ada2fb2138571753ae184999cb9c164b45026234a8133660d04cf9a90608d7"
+    }
+  },
+  "environment": {
+    "packages": {
+      "torch": "2.11.0+cu130",
+      "torchvision": "0.26.0+cu130",
+      "segmentation-models-pytorch": "0.5.0",
+      "numpy": "2.1.3",
+      "pandas": "2.2.3",
+      "Pillow": "11.3.0",
+      "matplotlib": "3.10.0",
+      "tqdm": "4.67.3"
+    },
+    "python": "3.12.3",
+    "platform": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+    "cuda": "13.0",
+    "cudnn": 91900,
+    "gpu": "NVIDIA GeForce RTX 5070",
+    "git_commit": "6aca58f5abe8ec9a3d6d2bdc74ee9e4e9d350ba3",
+    "git_status": "",
+    "source_sha256": {
+      "src/losses.py": "6af5205835fe818f99266405a0a1ba7944c7ff5f809f556ad305cc47e346462b",
+      "src/comparison_support.py": "0c0b2d37f4d96c418f4fa2d8598f5c8fd5062701ef1b3c3e663e229ea94c2426",
+      "src/preprocessing.py": "20c36f7047ec3ab3b8b99b4407d40cf189fa6c2a74cded6dd3f43e78758ce9a6",
+      "notebooks/04_baseline.ipynb": "cb99ec419252ec0e3db0048fb209891ebf038955933432c5e5471f2e3dc528bf",
+      "notebooks/05_comparison_bce_dice.ipynb": "1e84c90c626b12f6cb1990baa9c4fc17fd5cc26a932ab6d283d3a0c92dd69940"
+    }
+  },
+  "checkpoint_path": "results/comparison_unet_resnet18.pt",
+  "checkpoint_sha256": "395e55d160b7d3184fb6a85032aa8a9b24bff5b9625c3840a825a512d5d2e690",
+  "best_epoch": 10,
+  "training_seconds_including_epoch_validation": 312.1935375029998,
+  "test_evaluation_seconds_including_loading_and_metrics": 1.4873559919997206,
+  "test_evaluation_seconds_per_patch": 0.004131544422221446,
+  "probability_export_seconds_including_compression": 4.361341340999388,
+  "baseline_reference_sha256": "c1c45275c16f9cccdcdfdc0f71f08d77a7f503a54bfdcabd7a0c3cd98729e620"
+}
