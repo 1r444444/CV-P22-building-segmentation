@@ -102,6 +102,7 @@ the team code and dependencies are finalized.
 
 Person 2's BCE + Dice comparison notebook and exact local run instructions are
 documented in [COMPARISON_RUN.md](COMPARISON_RUN.md).
+The team handoff is in [COMPARISON_HANDOFF_RU.md](COMPARISON_HANDOFF_RU.md).
 
 TBD. This section will document the baseline, comparison condition, controlled
 variables, and ablation or sensitivity experiment.

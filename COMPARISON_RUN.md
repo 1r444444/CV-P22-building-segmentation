@@ -154,9 +154,8 @@ Probability archives contain `probabilities` (N,1,256,256), `image_paths`,
 `mask_paths`, `source_images` and `patch_indices` in CSV order. Person 3 can
 recompute metrics, adjust thresholds and select failures from these outputs or
 the checkpoint without retraining. Large artifacts need a separate handoff;
-they are not present in a Git clone. The checkpoint and caches currently remain
-local. The planned [comparison release](https://github.com/1r444444/CV-P22-building-segmentation/releases/tag/comparison-bce-dice-2026-10-19)
-has not been published. After publication, download its artifacts with:
+they are not present in a Git clone. Download the checkpoint and caches from the
+[comparison release](https://github.com/1r444444/CV-P22-building-segmentation/releases/tag/comparison-bce-dice-2026-10-19):
 
 ```bash
 gh release download comparison-bce-dice-2026-10-19 \
@@ -167,9 +166,27 @@ gh release download comparison-bce-dice-2026-10-19 \
   --pattern val.npz --pattern test.npz --dir results/comparison_probabilities
 ```
 
-The prepared release assets also include `comparison_artifact_checksums.txt`
-under `.cache/release/`. The checkpoint's SHA-256 is recorded independently in
-`results/metrics/comparison_run.json`.
+The release also includes `comparison_artifact_checksums.txt`. The checkpoint's
+SHA-256 is recorded independently in `results/metrics/comparison_run.json`.
+
+To load the recorded checkpoint without retraining or downloading ImageNet weights:
+
+```python
+from pathlib import Path
+import torch
+import segmentation_models_pytorch as smp
+
+root = Path.cwd()
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = smp.Unet(encoder_name="resnet18", encoder_weights=None, in_channels=3, classes=1)
+state = torch.load(root / "results/comparison_unet_resnet18.pt", map_location=device, weights_only=True)
+model.load_state_dict(state)
+model = model.to(device).eval()
+```
+
+Use the existing preprocessing before inference, then apply sigmoid to obtain
+probabilities. For analysis of this recorded run, the supplied probability caches
+avoid another inference pass and do not require a GPU.
 
 Training time includes epoch validation and checkpoint writes. Test evaluation
 time includes data loading, forward passes, loss and metrics; it is not isolated
@@ -198,8 +215,12 @@ and combined loss values measure different objectives and are not compared.
 
 All validation/test IoU and Dice values were independently recomputed from the
 saved float32 probabilities and original masks and matched the recorded metrics.
-The source, split, baseline-reference and checkpoint hashes were verified, as
-were all eight selected prediction masks and the complete notebook execution.
+A fresh load of the checkpoint reproduced all 504 validation/test probability maps
+exactly, as well as the recorded combined losses and metrics. Every processed RGB
+image and mask matched its expected padded raw crop across all 5,436 patches.
+The loss passed an independent NumPy calculation and finite-difference gradient
+check. The source, split, baseline-reference and checkpoint hashes were verified,
+as were all eight selected masks, the complete notebook execution and four tests.
 
 ## Milestone report
 
@@ -216,6 +237,6 @@ To rebuild the report with Tectonic from the repository root:
 tectonic --outdir report report/SecondApproachSubmission_P22.tex
 ```
 
-The executed notebook, lightweight outputs and report are committed locally on
-`experiment/bce-dice-comparison`. Publication of the branch and large-artifact
-release is pending.
+The development branch is `experiment/bce-dice-comparison`; the team's integration
+branch is `main`. A ready-to-forward Russian handoff is in
+[COMPARISON_HANDOFF_RU.md](COMPARISON_HANDOFF_RU.md).
