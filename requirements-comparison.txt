@@ -1,8 +1,6 @@
-# Same training dependencies as the baseline. CUDA wheels need this index.
 --extra-index-url https://download.pytorch.org/whl/cu130
 -r requirements.txt
 
-# Notebook runner; these do not change the model or training algorithm.
 jupyterlab==4.6.4
 nbconvert==7.17.2
 ipykernel==7.4.0

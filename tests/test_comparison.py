@@ -1,5 +1,3 @@
-"""Small numerical checks; synthetic inputs are not project results."""
-
 import unittest
 
 import torch
@@ -9,7 +7,6 @@ from src.losses import BCEDiceLoss
 
 class BCEDiceTests(unittest.TestCase):
     def test_known_overlap_and_batch_reduction(self):
-        # p=.5 in both pixels. The two targets have one and zero positives.
         logits = torch.zeros(2, 1, 1, 2, requires_grad=True)
         targets = torch.tensor([[[[1., 0.]]], [[[0., 0.]]]])
         expected = torch.log(torch.tensor(2.)) + ((1 - 2 / 3) + (1 - 1 / 2)) / 2

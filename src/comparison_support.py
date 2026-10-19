@@ -1,5 +1,3 @@
-"""Read-only checks and provenance for Person 2's comparison notebook."""
-
 import hashlib
 import json
 import subprocess
@@ -14,7 +12,6 @@ def sha256(path):
 
 
 def source_sha256(path):
-    """Notebook provenance must not depend on autosaved execution outputs."""
     path = Path(path)
     if path.suffix == ".ipynb":
         notebook = json.loads(path.read_text(encoding="utf-8"))
@@ -26,7 +23,6 @@ def source_sha256(path):
 
 
 def validate_comparison_data(root, frames):
-    """Require the complete baseline splits and existing 256px image-mask pairs."""
     expected = {"train": (4932, 137), "val": (144, 4), "test": (360, 10)}
     sources = {}
     summary = {}
