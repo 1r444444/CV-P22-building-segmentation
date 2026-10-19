@@ -57,6 +57,7 @@ Use Python 3.12 and a working NVIDIA driver. From the repository root:
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-comparison.txt
+.venv/bin/python -m ipykernel install --prefix .venv --name p22-comparison --display-name "P22 Comparison (.venv)"
 .venv/bin/python -m unittest discover -s tests -v
 .venv/bin/python -m pip check
 nvidia-smi
@@ -153,27 +154,65 @@ Probability archives contain `probabilities` (N,1,256,256), `image_paths`,
 `mask_paths`, `source_images` and `patch_indices` in CSV order. Person 3 can
 recompute metrics, adjust thresholds and select failures from these outputs or
 the checkpoint without retraining. Large artifacts need a separate handoff;
-they are not present in a Git clone.
+they are not present in a Git clone. Download the recorded run's large artifacts
+from the [comparison release](https://github.com/1r444444/CV-P22-building-segmentation/releases/tag/comparison-bce-dice-2026-10-19):
+
+```bash
+gh release download comparison-bce-dice-2026-10-19 \
+  --repo 1r444444/CV-P22-building-segmentation \
+  --pattern comparison_unet_resnet18.pt --dir results
+gh release download comparison-bce-dice-2026-10-19 \
+  --repo 1r444444/CV-P22-building-segmentation \
+  --pattern val.npz --pattern test.npz --dir results/comparison_probabilities
+```
+
+The release also includes `comparison_artifact_checksums.txt`. The checkpoint's
+SHA-256 is recorded independently in `results/metrics/comparison_run.json`.
 
 Training time includes epoch validation and checkpoint writes. Test evaluation
 time includes data loading, forward passes, loss and metrics; it is not isolated
 GPU latency. Export/compression time is recorded separately. Timings come from
 the actual run, with CUDA synchronization at boundaries.
 
-## Milestone report after the run
+## Recorded run — October 19, 2026
 
-No comparison result is claimed before execution. The report will use the actual
-saved outputs and retain the supplied reports' English, numbered-section style,
-centered project/team/date title, compact tables and LaTeX Latin Modern fonts on
-A4 pages. It is this milestone's report, separate from the team's final two-page
-technical summary.
+The notebook completed all 10 epochs on an NVIDIA GeForce RTX 5070. The selected
+checkpoint is epoch 10, with validation combined loss 0.4535. Training including
+epoch validation and checkpoint writes took 312.19 seconds; test evaluation over
+360 patches took 1.49 seconds, including data loading, forward passes, loss and
+metrics. Probability export and compression took another 4.36 seconds.
 
-Planned content: project overview; new approach and motivation; implementation
-differences and fixed settings; initial validation/test IoU/Dice with baseline
-and deltas; observations and limitations; environment, runtime and repository.
-Do not compare the numerical BCE-only and combined losses as if they measured
-the same objective. Report an unchanged or worse result honestly if that occurs.
+| Split | Metric | BCE baseline | BCE + Dice | Change (percentage points) |
+| --- | --- | --- | --- | --- |
+| Validation | IoU | 0.6338 | 0.6160 | -1.78 |
+| Validation | Dice | 0.7759 | 0.7624 | -1.35 |
+| Test | IoU | 0.6898 | 0.6681 | -2.17 |
+| Test | Dice | 0.8164 | 0.8010 | -1.54 |
 
-Once the user has run and saved the notebook, complete the report, then commit
-and push the executed notebook, lightweight outputs and report to
-`experiment/bce-dice-comparison`. No merge into `main` is needed for this handoff.
+The expected improvement was not observed for this fixed configuration. These
+single-run results do not establish that Dice loss is generally inferior. No
+loss weights or thresholds were tuned after observing test performance. BCE-only
+and combined loss values measure different objectives and are not compared.
+
+All validation/test IoU and Dice values were independently recomputed from the
+saved float32 probabilities and original masks and matched the recorded metrics.
+The source, split, baseline-reference and checkpoint hashes were verified, as
+were all eight selected prediction masks and the complete notebook execution.
+
+## Milestone report
+
+The English report is [SecondApproachSubmission_P22.pdf](report/SecondApproachSubmission_P22.pdf),
+with editable [LaTeX source](report/SecondApproachSubmission_P22.tex). It follows
+the previous reports' centered project/team/date title, numbered sections,
+compact tables and Latin Modern fonts on A4 pages. It covers the new approach,
+motivation, implementation, actual initial results, limitations and contribution.
+It is separate from the team's final technical summary.
+
+To rebuild the report with Tectonic from the repository root:
+
+```bash
+tectonic --outdir report report/SecondApproachSubmission_P22.tex
+```
+
+The executed notebook, lightweight outputs and report are supplied on
+`experiment/bce-dice-comparison`; the large artifacts are in the linked release.
