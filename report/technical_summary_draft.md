@@ -1,130 +1,132 @@
 # P22 — Building Segmentation in Satellite Images
 
-**Computer Vision 2026 · Technical summary · DRAFT, 2026-11-09**
+**Computer Vision 2026 · Technical Summary · Draft, 9 November 2026**
 
 **Team:** Renata Salikhzyanova, Kristina Soloveva, Elena Tuturina, Irina Bychkova.
 
-> Working skeleton for two pages; final pagination must be checked after figures
-> and results are inserted. Implementation facts below were inspected in code;
-> split metadata and a small inference were checked by execution. Full validation/
-> test metrics and training have not been independently reproduced. Historical
-> metric CSVs are not promoted to verified final results in this draft.
-
-<!-- PAGE 1: problem, dataset, method, one compact result table. -->
+<!-- Target: two pages after typesetting; final pagination is not yet verified.
+     Structure follows Computer_Vision_Project_Guidelines.pdf, pp. 1–3. -->
 
 ## 1. Problem and question
 
-We study binary building segmentation in aerial images. The engineering question
-is: **does adding soft Dice to binary cross-entropy improve foreground IoU and
-Dice with the same U-Net + ResNet18 and nominal training settings?**
-The intended changed factor is the loss function.
+We investigate binary building segmentation in aerial images: **does adding soft
+Dice to binary cross-entropy improve foreground overlap with the same U-Net +
+ResNet18 and nominal training settings?** The intended experimental variable is
+the loss function.
 
-Source: [experiment description](../COMPARISON_RUN.md#experiment);
-training notebooks 04 (cells 11–13) and 05 (cells 12–15).
+## 2. Dataset and preprocessing
 
-## 2. Dataset
-
-The implementation targets Massachusetts Buildings, using the Kaggle version-2
-repack. Committed split CSVs contain **137/4/10 source images** and
-**4932/144/360 train/validation/test patches**. Preparation pads 1500 × 1500 images
-to 1536 × 1536 and crops non-overlapping 256 × 256 image/mask pairs, retaining all
-36 patches per source, including background-only patches.
-
-Source filenames are disjoint across the committed splits; their counts, patch
-IDs and manifest hashes were checked. Full dataset contents and geographical
-overlap were not checked. RGB inputs use ImageNet normalization; masks become
-single-channel binary tensors via grayscale values `> 0`.
-
-**[PENDING: confirm dataset license and any further leakage checks.]**
-
-Sources: [data instructions](../data/README.md), notebook 02 (cells 4–6, 13–16),
-[shared preprocessing](../src/preprocessing.py), and
-[split hashes](../results/metrics/comparison_run.json).
+Massachusetts Buildings, Kaggle repack version 2, contains 151 original 1500 × 1500
+image–mask pairs. The original train/validation/test split has **137/4/10 images**,
+producing **4932/144/360 patches**. Pairs are zero-padded to 1536 × 1536 and divided
+into 36 non-overlapping 256 × 256 patches; all patches are retained. RGB inputs use
+ImageNet normalization; grayscale masks are binarized with `> 0`.
+Source filenames are disjoint across splits; reconstructed validation/test CSVs
+match the committed files byte-for-byte. Geographical/content duplication has not
+been excluded. **Dataset license confirmation remains pending.**
 
 ## 3. Method and experiment
 
-Both implementations use `smp.Unet` with an ImageNet-pretrained ResNet18 encoder,
-three input channels and one output logit. Baseline loss is `BCEWithLogitsLoss`;
-the second condition adds mean per-patch soft Dice loss, coefficients 1:1,
-smoothing 1. Shared nominal settings are Adam, learning rate 0.001, batch size 8,
-10 epochs and seed 42, without augmentation. Each condition selects its checkpoint
-by its own minimum validation loss.
+Both conditions use U-Net with an ImageNet-pretrained ResNet18 encoder. The baseline
+uses `BCEWithLogitsLoss`; the comparison adds mean per-patch soft Dice loss, with
+equal coefficients and smoothing 1. Shared settings are Adam, learning rate 0.001,
+batch size 8, ten epochs, seed 42 and no augmentation. Checkpoints are selected by
+minimum validation loss under each condition's own objective.
 
-The main comparison uses `sigmoid(logits) >= 0.5` for both models. Global foreground
-metrics are `IoU = I/(U + 1e-7)` and `Dice = 2I/(P + T + 1e-7)` over each entire
-split, including padded pixels. A separate sensitivity analysis uses thresholds
-0.3/0.5/0.7; any threshold selection must use validation data and be labelled
-separately. No metric definition or experiment setting is changed by this draft.
+The main comparison thresholds sigmoid probabilities at **0.5 for both models**.
+Metrics use global foreground pixel totals, including empty and padded regions:
+`IoU = I/(U + 1e-7)`; `Dice = 2I/(P + T + 1e-7)`. These are not per-patch averages.
 
-## 4. Results — awaiting full evaluation
-
-**[INSERT verified full-split results only after artifact recovery and evaluation.]**
+## 4. Results and sensitivity
 
 | Model, common threshold 0.5 | Val IoU | Val Dice | Test IoU | Test Dice |
-| --- | --- | --- | --- | --- |
-| BCE baseline | PENDING | PENDING | PENDING | PENDING |
-| BCE + soft Dice | PENDING | PENDING | PENDING | PENDING |
+| --- | ---: | ---: | ---: | ---: |
+| BCE baseline | 0.6338 | 0.7759 | 0.6898 | 0.8164 |
+| BCE + soft Dice | 0.6160 | 0.7624 | 0.6681 | 0.8010 |
 
-**[Record evaluation commit, checkpoint/cache checksums, exact split and command.]**
-**[INSERT sensitivity result, threshold-selection rule and supporting artifact.]**
+Adding soft Dice reduced test IoU by **2.17 percentage points** and Dice by
+**1.54 percentage points** in this configuration.
 
-<!-- PAGE 2: interpretation, one compact failure figure, reproducibility, contributions. -->
+Sensitivity analysis evaluated thresholds 0.3/0.5/0.7. Maximizing validation IoU
+selects **0.5 for BCE** (0.6338) and **0.3 for BCE + Dice** (0.6199). With these
+validation-selected thresholds, comparison test IoU/Dice are **0.6718/0.8037**;
+baseline remains **0.6898/0.8164**. Threshold 0.7 reduces validation overlap for both.
+This sensitivity result is separate from the common-threshold comparison.
 
 ## 5. Interpretation and limitations
 
-**[INSERT a conclusion answering the question, supported by the verified table;
-state effect size and distinguish fixed from validation-selected thresholds.]**
+The chosen Dice term did not improve overlap, even after threshold selection.
+This does not establish that Dice loss is generally inferior. One training run per
+condition, four validation source images, different GPUs (T4/RTX 5070), and incomplete
+baseline environment/execution-order records limit causal and statistical claims.
+BCE-only and combined-loss values are not directly comparable.
 
-The historical runs used different GPUs (T4 and RTX 5070). The baseline software
-environment and historical cell order are incompletely documented. A single run
-per condition and four validation source images limit generalization; a measured
-difference would not by itself establish statistical significance or isolate loss
-as its sole cause. BCE and combined-loss values are different objectives.
+## 6. Failure analysis
 
-## 6. Failure analysis — figure and causes pending
+Renata's results checkpoint report (pp. 2–3) and the
+[failure comparison](../figures/failure_comparison.png) describe three test examples
+at threshold 0.5, regenerated during verification:
 
-**[INSERT FINAL FIGURE: one compact panel with input, ground truth and both models
-for three identified test patches; include threshold, identities and provenance.]**
+- **113, `23429020_15`, patch 05:** BCE detects most of a large building (IoU 0.833);
+  BCE + Dice misses most of it (0.085).
+- **216, `23579005_15`, patch 00:** both models partially detect a small building
+  and produce false positives; IoU is 0.147/0.172 for BCE/comparison.
+- **267, `23729035_15`, patch 15:** both produce false positives near water, with
+  almost no labelled building foreground; IoU is near zero.
 
-Notebook 06 (cells 11 and 16) selects the following examples at threshold 0.5.
-The descriptions below summarize existing materials, not newly verified findings.
-
-| Test CSV index and identity | Existing description | Required completion |
-| --- | --- | --- |
-| 113: `23429020_15`, patch 05 | Large building largely missed by comparison model | [Verify predictions; explain likely cause with visual evidence.] |
-| 216: `23579005_15`, patch 00 | Small building only partly detected | [Verify predictions; explain likely cause with visual evidence.] |
-| 267: `23729035_15`, patch 15 | False positives near water | [Verify predictions; explain likely cause with visual evidence.] |
-
-Describe likely causes as hypotheses unless an experiment tests them. Existing
-figures under `figures/` are candidates; none is designated final by this draft.
+**To confirm with Renata:** add a case-specific likely cause for each failure.
+Existing descriptions mention small objects and visual ambiguity but do not
+adequately explain all three. No additional causes are assumed here.
 
 ## 7. Reproducibility and runtime
 
 Repository: https://github.com/1r444444/CV-P22-building-segmentation.
-Audit base: `e61de6b`; setup, inference and evaluation commands are in
-[README](../README.md#setup).
+**Evaluation was repeated from both saved checkpoints on all 144 validation and
+360 test patches; training was not rerun or independently reproduced.** The audit
+used macOS arm64, Python 3.11.15, PyTorch 2.11.0 and segmentation-models-pytorch 0.5.0.
+Baseline IoU/Dice at 0.5 and eight published masks match exactly. Comparison release
+caches reproduce recorded metrics exactly; fresh CPU inference matches four-decimal
+precision, with small numerical differences. Notebook 06 completed all 14 code cells
+sequentially. Sensitivity values match at four decimals; PNG raster dimensions differ.
+Separate logs, identities and checksums are retained under `verification/`.
 
-**Verified scope:** fresh macOS arm64 Python 3.11.15 installation, dependency
-check, eight unit/integration tests, split metadata checks and CPU inference on
-eight test patches from one original image. Comparison checkpoint SHA-256 matches
-the recorded manifest. This is a smoke test, not full metric reproduction.
+Kristina estimates **about 18 minutes of training on T4** and **3–4 seconds of
+batched test inference over 360 patches**, batch size 8, 256 × 256 inputs, from
+progress bars. These are approximate historical estimates, not a separate benchmark
+or single-image latency. The comparison manifest records **312.19 s** for training
+including epoch validation/checkpoint writes and **1.49 s** for test evaluation
+including loading, forward passes, loss and metrics on RTX 5070. Different hardware
+and timing boundaries prevent a direct speed comparison.
 
-**Blockers:** recover the historical baseline checkpoint/checksum, complete
-validation/test caches for both models and processed evaluation data; then rerun
-evaluation. Training has not been reproduced. Recorded CUDA configuration is
-documented separately and was not revalidated by the CPU audit.
+## 8. Members' contributions
 
-**[INSERT final software/hardware environment and measured training/evaluation
-times, with timing boundaries; label historical timings separately if retained.]**
+- **Kristina Soloveva:** dataset preparation, preprocessing and BCE baseline.
+- **Elena Tuturina:** BCE + Dice implementation/run, artifacts and comparison milestone report.
+- **Renata Salikhzyanova:** evaluation, threshold sensitivity, failure visualizations and descriptions.
+- **Irina Bychkova:** environment/integration fixes, reproducibility verification and this draft.
 
-## 8. Actual contributions — confirmation required
+**For team agreement:** confirm shared authorship of intermediate reports and any
+additional contributions. Demo preparation is not claimed as completed.
 
-- **Member 1 — [confirm name]:** [INSERT actual dataset/baseline work and artifacts.]
-- **Member 2 — Elena Tuturina:** [CONFIRM actual comparison work and final scope;
-  existing milestone documents the BCE + Dice implementation and recorded run.]
-- **Member 3 — [confirm name]:** [INSERT actual evaluation, sensitivity and failure analysis work.]
-- **Member 4 — Irina Bychkova:** [CONFIRM integration/reproducibility work and
-  artifact references; add summary/demo work only when actually completed.]
-
-<!-- FINALIZATION: fill placeholders with evidence, select final figure(s), remove
-     draft/editorial notes, and verify the rendered document is at most two pages. -->
+<!-- Evidence notes for review, excluded from the two-page body:
+     Guidelines: /Users/irina/Downloads/Computer_Vision_Project_Guidelines.pdf, pp. 1–3;
+     p. 2 requires three failure cases with likely causes, which remain incomplete.
+     Data: notebooks/02_prepare_subset.ipynb, cells 4–6, 13–16; src/preprocessing.py.
+     Models: notebooks/04_baseline.ipynb, cells 11–16;
+     notebooks/05_comparison_bce_dice.ipynb, cells 12–18; COMPARISON_RUN.md.
+     Results: results/metrics/baseline_metrics.csv, comparison_metrics.csv,
+     comparison_threshold_sensitivity.csv, threshold_sensitivity_all_models.csv.
+     Runtime: Kristina's messages supplied by the user; results/metrics/comparison_run.json.
+     Failures: /Users/irina/Downloads/ResultsCheckpointSubmission_P22.pdf, pp. 2–3;
+     notebooks/06_evaluation.ipynb, cells 9–11, 16; its markdown adds no case-specific causes.
+     Verification: verification/baseline-drive-evaluation-2026-11-09/verification-summary.json,
+     notebook-execution.json, baseline-evaluation-verification.json;
+     verification/handoff-evaluation-2026-11-09/results/comparison-metric-verification.json
+     and fresh-inference-verification.json. Audit files are local and ignored by Git;
+     package relevant evidence and artifact access instructions before final submission.
+     Provenance: verification at audit code 5ec84aa, base e61de6b.
+     Contributions: ProjectPlanSubmission_P22.pdf, Team Responsibilities; Kristina's handoff;
+     commits b378de7/2c418ba (kriss), b247240 (Renata); COMPARISON_RUN.md and
+     SecondApproachSubmission_P22.tex (Elena); audit history and verification (Irina).
+     Finalize: clarify failure causes, license and shared contributions; package evidence;
+     then typeset and verify no more than two pages. No PDF or slides generated. -->
