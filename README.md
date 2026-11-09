@@ -65,8 +65,7 @@ CV-P22-building-segmentation/
 `-- report/               # Technical summary template and final report
 ```
 
-The internal structure of `src/` will be introduced only when the implemented
-code makes those boundaries useful.
+`scripts/` contains the selected-patch demo runner and HTML/image rendering code.
 
 ## Team Responsibilities
 
@@ -97,12 +96,12 @@ code makes those boundaries useful.
 - Organize final metrics, figures, technical summary, and demo materials.
 - Document the runtime environment and approximate training/inference time.
 
-Team members named in the existing milestone report: Renata Salikhzyanova,
-Kristina Soloveva, Elena Tuturina, Irina Bychkova. Elena's comparison contribution
-is documented in `COMPARISON_RUN.md` and the milestone PDF. Irina owns integration,
-reproducibility and demo. Members 1 and 3 should confirm their name-to-role mapping
-and final contribution statements; the responsibility list above is planned work,
-not evidence that every deliverable is complete.
+Confirmed contributions: **Kristina Soloveva** - dataset preparation, preprocessing
+and BCE baseline; **Elena Tuturina** - BCE + Dice implementation/run, artifacts and
+comparison milestone report; **Renata Salikhzyanova** - evaluation and failure
+analysis; **Irina Bychkova** - environment/integration fixes, reproducibility
+verification, technical summary, and development/testing of the demo script.
+See the [technical summary](report/technical_summary_P22.pdf).
 
 ## Dataset
 
@@ -341,8 +340,9 @@ The [two-page summary PDF](report/technical_summary_P22.pdf) is typeset from tha
 source; both pages were visually checked. Rebuild with
 `python3 report/build_technical_summary.py` (requires `pdflatex` and Poppler's
 `pdfinfo`; these are report-build tools, not inference dependencies).
-Team agreement and the recorded-video URL remain pending; no demo slides were
-created by this audit. See [FINAL_HANDOFF.md](FINAL_HANDOFF.md) for the publication
+The agreed [recorded demo](https://drive.google.com/file/d/12eeFMhpknbHesvbJhntL6vVybsqNM__O/view?usp=sharing)
+is linked in the PDF; no demo slides were created by this audit.
+See [FINAL_HANDOFF.md](FINAL_HANDOFF.md) for the publication
 file list and [verification evidence](report/reproducibility_evidence/) for the
 lightweight audit records.
 
@@ -355,14 +355,14 @@ claims and prevent a direct runtime comparison.
 
 ## Recorded demo without retraining
 
-The team reports that the demo video has been recorded. **Video link: TO BE ADDED.**
-The recording has not been reviewed in this audit. The commands below repeat the
-working pipeline shown by the demo script.
+[Watch the agreed recorded pipeline demo (Google Drive)](https://drive.google.com/file/d/12eeFMhpknbHesvbJhntL6vVybsqNM__O/view?usp=sharing).
+The commands below repeat the working pipeline without retraining.
 
-Use the existing `.venv-audit` on the audited Mac. From the repository root:
+After the setup/data/weight steps above, run from the repository root:
 
 ```bash
-.venv-audit/bin/python scripts/demo_inference.py --indices 0 113 --device cpu --open
+.venv/bin/python scripts/demo_inference.py --indices 0 113 --device cpu \
+  --comparison-checkpoint verification/artifacts/comparison_unet_resnet18.pt --open
 ```
 
 Every invocation creates a new `verification/demo/run-.../` directory and opens
@@ -385,15 +385,9 @@ directories are rejected. For a fixed new directory, use `--output-dir`; to avoi
 opening a browser, omit `--open` and use the `open '.../index.html'` command printed
 by the script. No extra dependencies or server are required.
 
-On this Mac, defaults use the verified files already under `verification/`:
-
-- Data: `verification/handoff-evaluation-2026-11-09/data/processed/test/`.
-- Baseline: `verification/baseline-drive-evaluation-2026-11-09/downloads/baseline_unet_resnet18.pt`.
-- Comparison: `verification/2026-11-09/downloads/comparison_unet_resnet18.pt`.
-
-In a fresh clone, use the setup/data/weight instructions first and substitute
-`.venv/bin/python`. Standard `data/processed/test/` and `results/*unet_resnet18.pt`
-locations are supported. Explicit alternatives are:
+The command uses `data/processed/test/`, `results/baseline_unet_resnet18.pt` and the
+comparison checkpoint restored above. If both checkpoints are instead under
+`results/*unet_resnet18.pt`, omit `--comparison-checkpoint`. Explicit alternatives are:
 
 ```bash
 .venv/bin/python scripts/demo_inference.py --indices 0 113 --device cpu \
@@ -407,7 +401,7 @@ images directory itself. The script reports missing inputs instead of downloadin
 files or training. To preview an input before starting the recorded command:
 
 ```bash
-open verification/handoff-evaluation-2026-11-09/data/processed/test/images/22828930_15_patch_00.png
+open data/processed/test/images/22828930_15_patch_00.png
 ```
 
 Test 0 has clearly visible buildings and imperfect but useful predictions; it is
@@ -429,11 +423,9 @@ area and select your microphone in Options; see
 
 - Person 1: complete baseline environment/execution-order records, data license
   and content/geographic leakage checks; baseline timing remains a progress-bar estimate.
-- Person 3: agree on the draft's tentative failure interpretations and commit the
-  existing results-checkpoint report if it is a team source.
-- Team: agree on shared contributions and final submission artifacts.
-- Person 4: publish the reviewed audit changes when authorized, add the recorded
-  demo URL, and rebuild/recheck the two-page PDF after final team agreement.
+- Team: complete the final submission package, including any required slides.
+- Person 4: complete clean-copy acceptance and publish the reviewed audit changes
+  when authorized. The agreed video URL and contributions are already in the summary.
 
 Local audit evidence is under the dated `verification/` directories and ignored by
 Git; it must not replace `results/metrics/`. The demo is a selected-patch inference
