@@ -58,7 +58,9 @@ def render(source):
             output.append(r"\section*{" + inline(block[3:]) + "}")
         elif block.startswith("| "):
             rows = [line.strip().strip("|").split("|") for line in lines]
-            output.extend([r"\begin{center}", r"\begin{tabular}{@{}lrrrr@{}}", r"\toprule"])
+            wrapped = len(rows[0]) == 2
+            table = r"\begin{tabularx}{\linewidth}{@{}p{4.2cm}X@{}}" if wrapped else r"\begin{tabular}{@{}lrrrr@{}}"
+            output.extend([r"\begin{center}", table, r"\toprule"])
             for index, row in enumerate(rows):
                 if index == 1:
                     output.append(r"\midrule")
@@ -67,7 +69,8 @@ def render(source):
                 if index == 0:
                     cells = [r"\textbf{" + cell + "}" for cell in cells]
                 output.append(" & ".join(cells) + r" \\")
-            output.extend([r"\bottomrule", r"\end{tabular}", r"\end{center}"])
+            end_table = r"\end{tabularx}" if wrapped else r"\end{tabular}"
+            output.extend([r"\bottomrule", end_table, r"\end{center}"])
         elif block.startswith("- "):
             output.append(r"\begin{itemize}")
             for item in re.split(r"\n- ", block[2:]):
@@ -86,7 +89,7 @@ def render(source):
 
 PREAMBLE = r"""\documentclass[11pt,a4paper]{article}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern,microtype,booktabs,enumitem}
+\usepackage{lmodern,microtype,booktabs,enumitem,tabularx}
 \usepackage[top=1.5cm,bottom=1.5cm,left=1.8cm,right=1.8cm]{geometry}
 \usepackage[hidelinks]{hyperref}
 \usepackage{fancyhdr}
