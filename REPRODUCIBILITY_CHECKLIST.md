@@ -2,17 +2,19 @@
 
 Complete this checklist before final submission.
 
-- [ ] A clean clone works without relying on untracked project files.
-- [ ] The documented environment can be recreated.
+- [x] A clean local clone of the audit branch works with external evaluation data
+  and weights in documented locations; no author source or venv is reused.
+- [x] The documented CPU/macOS environment can be recreated.
 - [ ] The dataset can be obtained and prepared using the README instructions.
-- [ ] Source code and notebooks contain no hardcoded local paths.
+- [x] Executable sources have no mandatory author-local absolute paths.
 - [ ] All required source, configuration, metric, figure, and report files exist.
-- [ ] Random seeds and relevant deterministic settings are documented.
-- [ ] Final reported metrics can be reproduced from the documented commands.
-- [ ] Final figures can be reproduced from the documented commands.
-- [ ] The runtime environment is documented, including relevant software and hardware.
-- [ ] Approximate training time is documented.
-- [ ] Approximate inference time is documented.
+- [x] Random seeds and relevant deterministic settings are documented.
+- [x] Main metrics at 0.5 reproduce exactly for baseline and to four decimals for
+  fresh CPU comparison; historical comparison caches reproduce exactly.
+- [x] Four evaluation figures regenerate separately; raster identity is not claimed.
+- [x] The runtime environment is documented, including relevant software and hardware.
+- [x] Approximate training time is documented.
+- [x] Approximate inference time is documented.
 
 
 ## Integration audit — 2026-11-09
@@ -64,16 +66,27 @@ reproduced or that the final GitHub already contains these local changes.
   inference; results equal the earlier verified CPU probabilities exactly.
 - [x] Two-page summary typeset from the existing Markdown with 11 pt body text;
   page count and rendered pages checked. Irina's demo development/testing included.
-- [ ] Final clean-clone acceptance after publishing the reviewed audit changes:
-  repeat setup, data restoration, full checkpoint exports and notebook 06 using
-  only the published instructions/artifact links, without audit-local fallbacks.
+- [x] Final clean local source-copy acceptance: fresh dependency installation,
+  `pip check`, 12 tests, both full checkpoint exports, notebook 06 (14 cells) and
+  demo test 0/113 passed. External inputs were previously verified evaluation PNGs
+  and weights copied to README locations; author source/venv were not reused.
+- [x] Repeated unchanged notebook 02 preparation functions on all 14 available
+  evaluation source pairs: all 1008 generated PNG files and val/test CSVs match
+  byte-for-byte. Full raw download and sequential notebook 02 were not repeated.
+- [x] Both notebook 06 routes checked: released comparison caches reproduce the
+  historical sensitivity table at four decimals; with fresh CPU comparison outputs,
+  val Dice at threshold 0.3 is 0.7653 versus historical 0.7654. Other sensitivity
+  values agree at four decimals; validation-selected thresholds remain 0.5/0.3.
+- [x] Anonymous range reads of raw data, weights, release caches and recorded demo
+  pass (HTTP 206); full repeat downloads and video playback were not checked.
+- [ ] Repeat the remote clean-clone acceptance after publication if the final
+  submitted commit differs from the checked local executable sources.
 - [ ] Training reproduced: not attempted; needs the intended CUDA environment,
   complete dataset and confirmation of historical baseline execution order.
 - [ ] Dataset license, content/geographic leakage checks and baseline runtime and
   complete software environment confirmed by Person 1.
-- [ ] Team agreement on tentative failure interpretations and shared contributions.
-- [ ] Recorded-demo URL added and access checked. The user confirms the video is
-  recorded; the recording has not been reviewed by this audit.
+- [x] Agreed contribution wording and recorded-demo URL are in the summary and README.
+  Renata's contribution is evaluation and failure analysis.
 - [ ] Final repository publication and any slides required for the submission.
   No slides/video were created and nothing was pushed by this audit.
 

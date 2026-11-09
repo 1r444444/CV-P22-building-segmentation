@@ -21,6 +21,7 @@ CSVs, metrics and figures already on main. Do not copy only the PDF/README.
 | `scripts/demo_inference.py`, `scripts/demo_view.py`, `tests/test_demo.py` | Repeatable demo with fresh forward passes and clearly labelled per-patch scores |
 | `report/technical_summary_draft.md`, `report/build_technical_summary.py`, `report/technical_summary_P22.pdf` | Editable content, reproducible typesetting and visually checked two-page PDF |
 | `report/reproducibility_evidence/README.md`, `audit_environment.json`, `baseline_checkpoint.json`, `baseline_evaluation.json`, `comparison_cached_metrics.json`, `comparison_fresh_inference.json`, `notebook_execution.json`, `notebook_output_comparison.json`, `demo_fresh_runs.json`, `provenance.json` (all JSONs in that directory) | Lightweight evidence for the report's verification claims; original protocols preserved locally |
+| `report/reproducibility_evidence/final_acceptance.json`, `public_artifact_access.json`, `clean_copy_environment.txt` (all in that directory) | New clean-copy checks, anonymous artifact access and exact fresh environment |
 | `FINAL_HANDOFF.md` | This inventory and remaining acceptance checks |
 
 `git diff --name-status origin/main` plus `git ls-files --others --exclude-standard`
@@ -41,7 +42,8 @@ are already on main and still needed. Their experimental contents were not chang
    size/SHA-256. Current Drive permission metadata shows `anyone: writer`, so
    link sharing is enabled with editing rights. Prefer reader access for the
    submitted weight artifact; permissions were not changed by this audit.
-   An actual logged-out download by the teacher has not been tested. The hash is
+   An anonymous range download passed after Google's confirmation page; no full
+   repeat download or teacher-specific account/network test was performed. The hash is
    a measured received-file fingerprint, not an independently supplied author hash.
 4. Download the comparison checkpoint from the named GitHub release and verify
    its manifest hash. Generate both models' full caches with the checked exporter,
@@ -55,7 +57,54 @@ could save time, but is not necessary. Weights/data/caches must remain available
 through external links; neither this Git clone nor the evidence JSONs contain them.
 Do not transfer `.venv*`, full `verification/`, raw/processed datasets or checkpoints
 into normal Git history. The prepared-data Drive archive was not needed/downloaded
-or validated by this audit and is not required by the documented raw-data route.
+or content-validated by this audit and is not required by the documented raw-data
+route; anonymous range access passed. Its Drive metadata also shows `anyone: writer`.
+
+## Completed clean-copy and link checks
+
+The checked executable code is audit commit `c9e571c`; subsequent handoff changes
+only document the results and add evidence. A local Git clone contained tracked
+source files only, followed by a **new `.venv`** installed from
+`requirements-notebooks.txt`. No existing author venv/source imports were used.
+Previously verified external val/test PNGs and both checkpoints were physically
+copied to the paths documented in README, with identities/hashes checked.
+
+- Installation, `pip check` and all **12 tests** passed.
+- Both checkpoint exports completed on **144 validation / 360 test** patches.
+  Baseline IoU/Dice at 0.5 and eight published masks match exactly. Fresh CPU
+  comparison val IoU/Dice are 0.6159929978/0.7623708749, test 0.6680798694/0.8010166440;
+  all agree with the main reported metrics at four decimals.
+- Notebook 06 completed **all 14 code cells** and generated two sensitivity CSVs
+  and four figures, separately for fresh CPU outputs and released comparison
+  caches. Fresh CPU comparison val Dice at 0.3 is 0.7653325307 versus release
+  0.7653526677 (0.7653/0.7654); validation-selected thresholds remain 0.5/0.3.
+  With released comparison caches, all sensitivity values agree at four decimals.
+- Fresh demo test 0/113 loaded both weights and executed both models. Its
+  probabilities equal the earlier verified CPU demo exactly. The new README
+  command explicitly uses the comparison checkpoint in `verification/artifacts/`.
+- Existing notebook 02 functions regenerated the 144/360 evaluation patches from
+  all 14 available raw source pairs; PNGs and split CSVs match byte-for-byte.
+  This does not claim a full sequential preparation notebook run with train data.
+- Anonymous requests returned HTTP 206/file bytes for the Kaggle v2 raw archive,
+  baseline checkpoint, comparison release weights/caches/checksum and agreed demo.
+  Large Drive files require a public download confirmation. This supports access
+  without login at check time, not full repeat downloads or video playback.
+- The final summary remains a **two-page PDF** with the correct clickable demo URL.
+  Experimental metrics, selected predictions, training notebooks, splits and
+  figures are unchanged from `main`; generated outputs are separate.
+
+Full 1.6 GB raw download, sequential notebook 02 on the training split, training
+from scratch and a new Linux/CUDA setup were not repeated. Raw training files are
+not present in the acceptance copy; they are unnecessary for checkpoint evaluation.
+The default sandbox initially blocked Jupyter loopback ports; the same notebook
+command succeeded with local kernel ports permitted. This is an execution-
+environment restriction, not a missing project file.
+
+The tracked lightweight records are under `report/reproducibility_evidence/`.
+Full logs and helper scripts remain local in
+`verification/final-handoff-2026-11-09/`; the clean copy and its newly generated
+outputs remain at `/private/tmp/p22-final-check-20261109-v1/repo` and are not
+published. Do not describe those local paths as available to the teacher.
 
 ### Is `scripts/demo_inference.py` required?
 
@@ -72,13 +121,15 @@ The demo's patch IoU/Dice do not replace global evaluation.
 
 ## Remaining before submission
 
-- Add the recorded-demo URL to README and the Markdown; verify teacher access,
-  rebuild the PDF and recheck exactly two readable pages.
-- Agree on shared contributions and tentative failure explanations; obtain the
-  dataset license/usage terms from Person 1. Do not silently assert these resolved.
-- Run the final clean-clone acceptance with only the intended published files and
-  accessible artifacts. Full checkpoint evaluation already passed locally, but
-  this does not establish a clean published-clone run or reproduction of training.
+- The agreed demo URL and contribution wording are already in README/summary;
+  anonymous video range access passed. Check browser playback from another
+  account/device if desired before handing in the link.
+- Obtain dataset license/usage terms from Person 1 and retain the documented
+  limits on geographic/content leakage and the baseline environment history.
+- Prefer reader access for the two currently editable Drive artifacts; no sharing
+  permissions were changed. Preserve the recorded checkpoint SHA-256.
+- Local clean-copy acceptance passed within the scope above. Recheck a remote
+  clean clone if the published executable sources differ from those tested.
 - Publish the reviewed branch and PDF only after authorization; provide the final
   repository link/commit. No final release/tag is currently established by this audit.
 - Check the separate slide requirement (maximum three); this task creates no slides

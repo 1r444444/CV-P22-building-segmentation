@@ -64,7 +64,9 @@ notebook 01. They are used for inspection, not patch generation.
    `notebooks/01_dataset_explore.ipynb` to inspect counts, pairs and mask values.
    Its pair checker can report success for empty folders, so check the expected
    counts too; a success message alone is insufficient.
-2. Restart and run `notebooks/02_prepare_subset.ipynb`. It pads the bottom/right
+2. Restart and run `notebooks/02_prepare_subset.ipynb` with **all three raw splits**
+   available: its illustrative cells read a training example before processing
+   the splits. It pads the bottom/right
    with zeros from 1500 to 1536 and crops both image and mask at identical coordinates
    into a row-major 6 x 6 grid of non-overlapping 256 x 256 patches.
 3. All 36 patches per source are retained, including empty masks. No random
@@ -104,3 +106,23 @@ This small check does not validate the entire PNG repack or split.
 
 Raw data and generated patches are ignored by Git. The split CSVs are already
 tracked; do not use broad `git add -f data/` to publish datasets.
+
+## Evaluation-only checks and optional prepared archive
+
+Inference/evaluation need only the 144 validation and 360 test patches plus their
+ground-truth masks; training patches are not needed. If these processed files are
+already available, skip notebooks 01–05 and follow README's checkpoint exporter
+and notebook 06 commands. Running all of notebook 02 with only raw val/test files
+is not supported because of its training-example cells.
+
+The final clean-copy check used previously verified evaluation files as external
+inputs. The unchanged preparation functions from notebook 02 were also repeated
+on all 14 available evaluation source pairs; all regenerated PNGs and both split
+CSVs matched byte-for-byte. This is not a fresh full raw download or a full
+sequential run of notebook 02 with training data.
+
+The team also supplied an [optional prepared-data archive](https://drive.google.com/file/d/1syzt_uBi0kmkzJW6Atg2LTbWagRICqeZ/view),
+`cv_processed_data.zip` (740,391,195 bytes). Anonymous range access passed after
+Google's download confirmation, but the archive was not downloaded or extracted;
+its contents/checksum/layout are unverified. The documented raw Kaggle v2 route
+does not depend on this optional archive.

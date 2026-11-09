@@ -17,7 +17,8 @@ Integration status (2026-11-09): full checkpoint inference on 144 validation and
 360 test patches and sequential evaluation notebook 06 were checked on macOS CPU.
 Baseline IoU/Dice at threshold 0.5 and all eight published masks match exactly.
 Comparison release probabilities reproduce the recorded metrics exactly; fresh CPU
-comparison inference matches their four-decimal precision, with small differences.
+comparison inference matches their four-decimal precision at threshold 0.5, with
+small differences.
 Training has **not** been rerun or independently reproduced. See the
 [recorded-demo instructions](#recorded-demo-without-retraining) for fresh inference
 on individual examples; their patch scores are separate from full-split results.
@@ -188,6 +189,15 @@ Inference below constructs `encoder_weights=None` and loads the complete state d
 
 ## Restore weights and run inference
 
+Anonymous access was checked on 2026-11-09 with bounded HTTP requests, without
+account credentials: the Kaggle v2 archive, comparison release assets, baseline
+checkpoint and [recorded demo](https://drive.google.com/file/d/12eeFMhpknbHesvbJhntL6vVybsqNM__O/view?usp=sharing)
+returned file bytes (HTTP 206). This supports teacher access without login at the
+time checked; it is not a full repeat download or video playback test. Large Drive
+files may first show a confirmation page: open the baseline link and choose
+**Download / Download anyway**, then verify the received size and hash below.
+See [artifact access checks](report/reproducibility_evidence/public_artifact_access.json).
+
 The clone includes neither checkpoints nor full probability archives. The
 [comparison release](https://github.com/1r444444/CV-P22-building-segmentation/releases/tag/comparison-bce-dice-2026-10-19)
 contains a 57,423,827-byte checkpoint, 35,307,019-byte val cache and 87,927,103-byte
@@ -224,9 +234,8 @@ It is not included in Git or the comparison release. The received file has
 57,427,223 bytes and measured SHA-256
 `1459948c249d7133a1c5115379122c17e0a1433429f168bfffe8a1dfddec20b0`.
 This fingerprints the checked file; no separate author-supplied checksum was provided.
-Full inference from it reproduced baseline IoU/Dice at 0.5 exactly. On this Mac the
-download and newly generated caches remain under `verification/baseline-drive-evaluation-2026-11-09/`.
-In a fresh clone, save the checkpoint as `results/baseline_unet_resnet18.pt` and
+Full inference from it reproduced baseline IoU/Dice at 0.5 exactly.
+Save the checkpoint as `results/baseline_unet_resnet18.pt` and
 restore processed data as described above. Then export without retraining:
 
 ```bash
@@ -322,6 +331,12 @@ Main comparison: threshold **0.5 for both models**, global foreground pixel tota
 The separate sensitivity experiment evaluates 0.3/0.5/0.7 and selects thresholds
 using validation IoU: BCE 0.5, BCE + Dice 0.3. At those thresholds comparison test
 IoU/Dice are **0.6718/0.8037**. Do not present these as the fixed-0.5 experiment.
+For the historical sensitivity table, use the released comparison caches. Fresh
+CPU probabilities give comparison validation Dice **0.7653325306650232** at 0.3,
+versus **0.7653526677389473** from the release (0.7653 vs 0.7654 after rounding).
+This is a small numerical difference; selected thresholds and reported selected-
+threshold test IoU/Dice are unchanged at four decimals. All main 0.5 metrics match
+at four decimals. Do not claim every fresh CPU sensitivity value rounds identically.
 
 Predictions are `sigmoid(logits) >= threshold`. Global IoU is `I/(U+1e-7)`;
 Dice is `2I/(P+T+1e-7)`, aggregated over the entire split, including padded and
@@ -424,8 +439,19 @@ area and select your microphone in Options; see
 - Person 1: complete baseline environment/execution-order records, data license
   and content/geographic leakage checks; baseline timing remains a progress-bar estimate.
 - Team: complete the final submission package, including any required slides.
-- Person 4: complete clean-copy acceptance and publish the reviewed audit changes
-  when authorized. The agreed video URL and contributions are already in the summary.
+- Person 4: publish the reviewed audit changes when authorized. The agreed video
+  URL and contributions are already in the summary; clean-copy checks are complete
+  within the scope below.
+
+Clean-copy acceptance passed on macOS arm64 with a new `.venv`: installation,
+12 tests, both full checkpoint exports, notebook 06 and demo test 0/113. Both
+fresh-comparison and release-cache evaluation routes were checked separately.
+External inputs were previously verified prepared validation/test files and
+checkpoints copied into the documented paths; no author source files or venv were
+reused. The full 1.6 GB raw download, full sequential preparation notebook with
+training data and model training were not repeated. See the
+[acceptance record](report/reproducibility_evidence/final_acceptance.json) and
+[fresh environment](report/reproducibility_evidence/clean_copy_environment.txt).
 
 Local audit evidence is under the dated `verification/` directories and ignored by
 Git; it must not replace `results/metrics/`. The demo is a selected-patch inference
