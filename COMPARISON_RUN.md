@@ -1,11 +1,11 @@
-# Person 2 — Comparison Experiment
+# BCE + Dice Comparison Experiment
 
-Owner: Elena Tuturina. The comparison is the **same U-Net + ResNet18 with BCE +
+Elena Tuturina implemented the **same U-Net + ResNet18 with BCE +
 soft Dice loss**, as specified in the project plan and first-working-model report.
 This contribution implements, trains, and evaluates that condition and saves its
 artifacts. It includes a brief initial comparison required by the milestone.
-Person 3 owns threshold sensitivity, the final evaluation table and failure
-analysis; Person 4 owns the combined technical summary, integration and demo.
+Final threshold sensitivity and failure analysis are in notebook 06; the combined
+technical summary and demo commands are linked from README.
 
 ## Experiment
 
@@ -154,10 +154,10 @@ The test set is evaluated only after checkpoint selection, using threshold 0.5.
 | `results/comparison_probabilities/{val,test}.npz` | Local float32 probabilities for every evaluation patch; ignored by Git |
 
 Probability archives contain `probabilities` (N,1,256,256), `image_paths`,
-`mask_paths`, `source_images` and `patch_indices` in CSV order. Person 3 can
-recompute metrics, adjust thresholds and select failures from these outputs or
-the checkpoint without retraining. Large artifacts need a separate handoff;
-they are not present in a Git clone. Download the checkpoint and caches from the
+`mask_paths`, `source_images` and `patch_indices` in CSV order. These archives support
+recalculating metrics, adjusting thresholds and selecting failures without
+retraining. The checkpoint also supports fresh inference. Large artifacts are release assets rather
+than Git files. Download the checkpoint and caches from the
 [comparison release](https://github.com/1r444444/CV-P22-building-segmentation/releases/tag/comparison-bce-dice-2026-10-19):
 
 ```bash

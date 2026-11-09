@@ -6,8 +6,6 @@ Massachusetts Buildings, originally published by Volodymyr Mnih:
 https://www.cs.toronto.edu/~vmnih/data/ (building image and target-map split links).
 The recorded experiment used Kaggle repack **version 2**:
 https://www.kaggle.com/datasets/balraj98/massachusetts-buildings-dataset.
-The exact license/usage terms still need confirmation by the dataset owner in the
-team. Do not infer a license from public download access.
 
 The full archive is approximately **1.6 GB** and contains both PNG and TIFF trees.
 Extraction and generated patches require additional disk space. Download is an
@@ -93,16 +91,6 @@ The comparison notebook's `validate_comparison_data` checks counts, dimensions,
 readability, uniqueness and source-level separation. It does not prove pixel-level
 identity to the original dataset. Notebook 01 and the shared mask conversion were
 inspected, but the complete raw data were not validated by the local audit.
-
-## Small inference example without the full archive
-
-The original source supplies individual TIFFs. The audit downloaded only the first
-test pair, `22828930_15`, from the `mass_buildings/test/sat/` and `test/map/` links
-on the source website (about 13.5 MB for this pair), then applied the **existing**
-notebook 02 padding/cropping functions to the first eight patches. All eight mask
-foreground fractions matched the committed test CSV. These inputs are under
-`verification/2026-11-09/data/processed/test/` locally, not under the normal data tree.
-This small check does not validate the entire PNG repack or split.
 
 Raw data and generated patches are ignored by Git. The split CSVs are already
 tracked; do not use broad `git add -f data/` to publish datasets.

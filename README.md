@@ -4,9 +4,8 @@ Team project for **Computer Vision 2026**.
 
 ## Goal
 
-Segment building contours in aerial or satellite images using a subset of a
-public dataset. Evaluate segmentation quality with IoU and Dice, and examine
-errors associated with shadows, small buildings, and dense urban regions.
+Segment buildings in Massachusetts Buildings imagery, compare loss functions
+using IoU and Dice, and examine representative segmentation failures.
 
 Research question: **does adding soft Dice to BCE improve building IoU/Dice?**
 The implemented experiment uses Massachusetts Buildings and U-Net + ResNet18.
@@ -43,9 +42,6 @@ Based on the official Computer Vision 2026 project guidelines, the project must:
 - prepare each member for an individual Q&A about the project;
 - state each team member's contribution.
 
-The official guidelines mention both a five-minute demo and a 10-minute demo
-format. The final duration is TBD pending clarification from the instructors.
-
 For this project, the primary quantitative metrics are **IoU** and **Dice**.
 
 ## Repository Structure
@@ -68,40 +64,15 @@ CV-P22-building-segmentation/
 
 `scripts/` contains the selected-patch demo runner and HTML/image rendering code.
 
-## Team Responsibilities
+## Team contributions
 
-### Person 1 - Dataset and Baseline
+| Team member | Contribution |
+| --- | --- |
+| Kristina Soloveva | Dataset preparation, preprocessing and BCE baseline. |
+| Elena Tuturina | BCE + Dice implementation/run, artifacts and comparison milestone report. |
+| Renata Salikhzyanova | Evaluation and failure analysis. |
+| Irina Bychkova | Environment/integration fixes, reproducibility verification, technical summary, and development/testing of the demo script. |
 
-- Select and prepare the public dataset and subset.
-- Create the train/validation/test split and preprocessing pipeline.
-- Implement the baseline and produce baseline predictions and metrics.
-
-### Person 2 - Comparison Model or Condition
-
-- Define the second model or condition.
-- Run a controlled comparison with the baseline.
-- Save predictions and metrics.
-
-### Person 3 - Evaluation and Failure Analysis
-
-- Calculate final IoU and Dice scores.
-- Prepare comparison tables and figures.
-- Run the sensitivity or ablation experiment.
-- Analyze and explain at least three failure cases.
-
-### Person 4 - Reproducibility, Integration, and Demo
-
-- Maintain the repository structure, README, and environment description.
-- Integrate team outputs and verify clean-environment reproducibility.
-- Check paths and required files.
-- Organize final metrics, figures, technical summary, and demo materials.
-- Document the runtime environment and approximate training/inference time.
-
-Confirmed contributions: **Kristina Soloveva** - dataset preparation, preprocessing
-and BCE baseline; **Elena Tuturina** - BCE + Dice implementation/run, artifacts and
-comparison milestone report; **Renata Salikhzyanova** - evaluation and failure
-analysis; **Irina Bychkova** - environment/integration fixes, reproducibility
-verification, technical summary, and development/testing of the demo script.
 See the [technical summary](report/technical_summary_P22.pdf).
 
 ## Dataset
@@ -138,8 +109,8 @@ python3.11 -m venv .venv
 file adds Jupyter tools. This CPU/macOS environment uses the same direct library
 versions with platform-specific PyTorch builds; it is not the original CUDA runtime.
 Transitive dependencies are not fully locked. The historical comparison freeze is
-`results/metrics/comparison_environment.txt`; the local audit freeze is under
-`verification/2026-11-09/environment.txt` (local, ignored).
+`results/metrics/comparison_environment.txt`; the checked CPU environment freeze is
+`report/reproducibility_evidence/clean_copy_environment.txt`.
 
 For the recorded CUDA training configuration, use **Python 3.12 and Linux/NVIDIA**
 and follow [COMPARISON_RUN.md](COMPARISON_RUN.md#local-environment).
@@ -349,17 +320,16 @@ Recorded results live in `results/metrics/`, selected binary masks in
 `results/predictions/`, and figures in `figures/`. The main comparison table is
 `comparison_initial_comparison.csv`; sensitivity is `threshold_sensitivity_all_models.csv`.
 The milestone PDF is `report/SecondApproachSubmission_P22.pdf`, **not** the final
-technical summary. The [technical summary draft](report/technical_summary_draft.md)
+technical summary. The [editable summary source](report/technical_summary_draft.md)
 contains verified results, limitations and cautiously labelled failure hypotheses.
 The [two-page summary PDF](report/technical_summary_P22.pdf) is typeset from that
 source; both pages were visually checked. Rebuild with
 `python3 report/build_technical_summary.py` (requires `pdflatex` and Poppler's
 `pdfinfo`; these are report-build tools, not inference dependencies).
 The agreed [recorded demo](https://drive.google.com/file/d/12eeFMhpknbHesvbJhntL6vVybsqNM__O/view?usp=sharing)
-is linked in the PDF; no demo slides were created by this audit.
-See [FINAL_HANDOFF.md](FINAL_HANDOFF.md) for the publication
-file list and [verification evidence](report/reproducibility_evidence/) for the
-lightweight audit records.
+is linked in the PDF. See [FINAL_HANDOFF.md](FINAL_HANDOFF.md) for the submission
+guide and [verification evidence](report/reproducibility_evidence/) for the
+recorded checks.
 
 Comparison run: Python 3.12.3, Linux, RTX 5070; training including epoch validation
 312.19 s; test evaluation including loading/loss/metrics over 360 patches 1.49 s.
@@ -402,16 +372,9 @@ by the script. No extra dependencies or server are required.
 
 The command uses `data/processed/test/`, `results/baseline_unet_resnet18.pt` and the
 comparison checkpoint restored above. If both checkpoints are instead under
-`results/*unet_resnet18.pt`, omit `--comparison-checkpoint`. Explicit alternatives are:
-
-```bash
-.venv/bin/python scripts/demo_inference.py --indices 0 113 --device cpu \
-  --data-root /path/containing/data \
-  --baseline-checkpoint /path/to/baseline_unet_resnet18.pt \
-  --comparison-checkpoint /path/to/comparison_unet_resnet18.pt --open
-```
-
-Here `--data-root` contains `data/processed/test/{images,masks}/`; it is not the
+`results/*unet_resnet18.pt`, omit `--comparison-checkpoint`. For other locations,
+use `--data-root`, `--baseline-checkpoint` and `--comparison-checkpoint`.
+The data root contains `data/processed/test/{images,masks}/`; it is not the
 images directory itself. The script reports missing inputs instead of downloading
 files or training. To preview an input before starting the recorded command:
 
@@ -426,22 +389,11 @@ model's large omission. Fresh CPU comparison on test 113 gives patch IoU about
 pixels differ at threshold 0.5. The demo agrees exactly with the previously checked
 fresh CPU probabilities, and does not substitute the historical result.
 
-Suggested recording flow: show input; run the command while narrating; show test 0
-and its four panels; use the page link to show test 113 and explain the untested
-boundary/context hypothesis. If presenting full-test numbers, label the separate
-360-patch table clearly. Finish by stating that evaluation was verified from
-weights and training was not rerun. On Mac, press Shift–Command–5, choose a recording
-area and select your microphone in Options; see
-[Apple's screen-recording instructions](https://support.apple.com/en-euro/guide/mac-help/mh26782/mac).
+Use the generated page links to inspect test 0 and test 113. The boundary/context
+explanation for test 113 remains an untested hypothesis. Full-test metrics in the
+table above describe all 360 patches and are separate from these patch scores.
 
-## Remaining handoff and verification
-
-- Person 1: complete baseline environment/execution-order records, data license
-  and content/geographic leakage checks; baseline timing remains a progress-bar estimate.
-- Team: complete the final submission package, including any required slides.
-- Person 4: publish the reviewed audit changes when authorized. The agreed video
-  URL and contributions are already in the summary; clean-copy checks are complete
-  within the scope below.
+## Verification scope
 
 Clean-copy acceptance passed on macOS arm64 with a new `.venv`: installation,
 12 tests, both full checkpoint exports, notebook 06 and demo test 0/113. Both
@@ -453,7 +405,11 @@ training data and model training were not repeated. See the
 [acceptance record](report/reproducibility_evidence/final_acceptance.json) and
 [fresh environment](report/reproducibility_evidence/clean_copy_environment.txt).
 
-Local audit evidence is under the dated `verification/` directories and ignored by
-Git; it must not replace `results/metrics/`. The demo is a selected-patch inference
-demonstration; it does not rerun full evaluation or training.
-Use [REPRODUCIBILITY_CHECKLIST.md](REPRODUCIBILITY_CHECKLIST.md) before submission.
+Source filenames are disjoint across splits; geographic/content duplication and
+the complete historical baseline environment were not independently established.
+Published verification records are in `report/reproducibility_evidence/`.
+Full datasets, checkpoints and probability caches are external inputs. New runs
+write to separate `verification/` output directories and preserve the submitted
+`results/metrics/` and `figures/`. The demo is selected-patch inference; it does not
+rerun training. See [REPRODUCIBILITY_CHECKLIST.md](REPRODUCIBILITY_CHECKLIST.md) for
+the scope and outcomes of the recorded checks.
