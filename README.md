@@ -13,14 +13,14 @@ The implemented experiment uses Massachusetts Buildings and U-Net + ResNet18.
 The changed factor is the loss; the architecture, source-level split and nominal
 training settings are shared. See [COMPARISON_RUN.md](COMPARISON_RUN.md).
 
-Integration status (2026-11-09): installation, imports, loss tests and an eight-patch
-CPU inference smoke test were checked in a fresh Python 3.11 environment on macOS.
-Full-split metric reproduction and retraining have **not** been performed in this
-audit. Recorded notebook outputs and CSVs remain historical experiment results.
-Full project reproducibility remains unverified while the historical baseline
-checkpoint and complete evaluation caches are unavailable locally. Recovering
-those artifacts and the processed evaluation data must be followed by a successful
-full-split evaluation; the smoke test does not satisfy that requirement.
+Integration status (2026-11-09): full checkpoint inference on 144 validation and
+360 test patches and sequential evaluation notebook 06 were checked on macOS CPU.
+Baseline IoU/Dice at threshold 0.5 and all eight published masks match exactly.
+Comparison release probabilities reproduce the recorded metrics exactly; fresh CPU
+comparison inference matches their four-decimal precision, with small differences.
+Training has **not** been rerun or independently reproduced. See the
+[recorded-demo instructions](#recorded-demo-without-retraining) for fresh inference
+on individual examples; their patch scores are separate from full-split results.
 
 ## Project Requirements
 
@@ -159,6 +159,7 @@ A new installation/training run on that CUDA profile was not verified by this au
 | `notebooks/05_comparison_bce_dice.ipynb` | Full BCE + Dice training/evaluation, figures and probability export; explicitly requires CUDA |
 | `src/losses.py` | BCE + mean per-patch soft Dice, coefficients 1/1, smoothing 1 |
 | `src/generate_baseline_probabilities.py` | Inference-only export from either compatible checkpoint; no ImageNet download |
+| `scripts/demo_inference.py` | Fresh inference from both checkpoints on selected test patches, with per-patch masks/metrics and a local HTML report |
 | `notebooks/06_evaluation.ipynb` | Both models' val/test caches + processed data → threshold CSVs and failure/threshold figures |
 | `src/dataset.py` | Empty placeholder; Dataset classes actually live in notebooks and exporter |
 
@@ -218,11 +219,16 @@ when all referenced files are available. Use `--data-root` for a separate data c
 paths in the split CSVs remain relative to that root. Existing output archives are
 rejected to prevent accidental overwrite; choose a new output directory per run.
 
-**Baseline handoff blocker:** `results/baseline_unet_resnet18.pt` and both
-`baseline_probabilities/{val,test}.npz` are absent from the clone and the only listed
-release. Obtain the historical checkpoint plus checksum from Person 1, or the full
-ordered probability caches from Person 3. Retraining creates a new result and does
-not restore the historical baseline. Once the checkpoint and processed data exist:
+**Baseline restore:** the checkpoint is now available from
+[Kristina's Drive handoff](https://drive.google.com/file/d/1TNc2oXPQq4J8j96hvKxc_UvBhmieqRHE/view).
+It is not included in Git or the comparison release. The received file has
+57,427,223 bytes and measured SHA-256
+`1459948c249d7133a1c5115379122c17e0a1433429f168bfffe8a1dfddec20b0`.
+This fingerprints the checked file; no separate author-supplied checksum was provided.
+Full inference from it reproduced baseline IoU/Dice at 0.5 exactly. On this Mac the
+download and newly generated caches remain under `verification/baseline-drive-evaluation-2026-11-09/`.
+In a fresh clone, save the checkpoint as `results/baseline_unet_resnet18.pt` and
+restore processed data as described above. Then export without retraining:
 
 ```bash
 .venv/bin/python src/generate_baseline_probabilities.py \
@@ -261,7 +267,9 @@ notebook 06 use test indices 113, 216, 267 at **threshold 0.5**, for both models
 
 ## Recorded results and metric conventions
 
-These are saved historical values, **not full-split metrics reproduced by this audit**.
+These are the saved run values, now independently checked on the full evaluation
+splits: baseline checkpoint inference matches exactly; comparison cache evaluation
+matches exactly and fresh CPU checkpoint inference agrees at four decimals.
 Main comparison: threshold **0.5 for both models**, global foreground pixel totals:
 
 | Model | Val IoU | Val Dice | Test IoU | Test Dice |
@@ -284,10 +292,9 @@ Recorded results live in `results/metrics/`, selected binary masks in
 `results/predictions/`, and figures in `figures/`. The main comparison table is
 `comparison_initial_comparison.csv`; sensitivity is `threshold_sensitivity_all_models.csv`.
 The milestone PDF is `report/SecondApproachSubmission_P22.pdf`, **not** the final
-technical summary. An [audit-backed draft skeleton](report/technical_summary_draft.md)
-contains confirmed implementation facts and explicit placeholders for verified
-final metrics, figures, failure explanations and actual contributions. It is not
-a completed submission; the original template is retained. No demo slides were created.
+technical summary. The [technical summary draft](report/technical_summary_draft.md)
+contains verified results, limitations and cautiously labelled failure hypotheses.
+Final typesetting and team agreement remain pending; no demo slides were created.
 
 Comparison run: Python 3.12.3, Linux, RTX 5070; training including epoch validation
 312.19 s; test evaluation including loading/loss/metrics over 360 patches 1.49 s.
@@ -296,18 +303,85 @@ package versions. Baseline ran on T4; no complete baseline environment/timing
 manifest is committed. Hardware differences and one run per condition limit causal
 claims and prevent a direct runtime comparison.
 
+## Recorded demo without retraining
+
+Use the existing `.venv-audit` on the audited Mac. From the repository root:
+
+```bash
+.venv-audit/bin/python scripts/demo_inference.py --indices 0 113 --device cpu --open
+```
+
+Every invocation creates a new `verification/demo/run-.../` directory and opens
+its `index.html` in the default browser after inference. The page has links for
+**Test 0** and **Test 113 — failure example**. Each shows **input RGB | ground truth |
+Baseline (BCE) | BCE + soft Dice**. The shared threshold is fixed at **0.5**.
+All displayed IoU/Dice values describe the **individual 256 × 256 patch**, not the
+full test set. Ground truth is used for scoring/display; only RGB enters the model.
+
+The script loads both state dicts with `weights_only=True` and strict architecture
+matching on every run, creates the model with `encoder_weights=None`, calls
+`model.eval()` and performs a fresh forward pass under `torch.inference_mode()`.
+It does not read previous probability caches or prediction PNGs. The terminal
+prints checkpoint paths/SHA-256, forward-pass messages and fresh patch metrics.
+The HTML report reads only images created in the new run directory.
+
+Each output contains the two probability NPZs (with test indices and image/mask
+identities), individual masks, four-column PNGs and `run.json`. Existing output
+directories are rejected. For a fixed new directory, use `--output-dir`; to avoid
+opening a browser, omit `--open` and use the `open '.../index.html'` command printed
+by the script. No extra dependencies or server are required.
+
+On this Mac, defaults use the verified files already under `verification/`:
+
+- Data: `verification/handoff-evaluation-2026-11-09/data/processed/test/`.
+- Baseline: `verification/baseline-drive-evaluation-2026-11-09/downloads/baseline_unet_resnet18.pt`.
+- Comparison: `verification/2026-11-09/downloads/comparison_unet_resnet18.pt`.
+
+In a fresh clone, use the setup/data/weight instructions first and substitute
+`.venv/bin/python`. Standard `data/processed/test/` and `results/*unet_resnet18.pt`
+locations are supported. Explicit alternatives are:
+
+```bash
+.venv/bin/python scripts/demo_inference.py --indices 0 113 --device cpu \
+  --data-root /path/containing/data \
+  --baseline-checkpoint /path/to/baseline_unet_resnet18.pt \
+  --comparison-checkpoint /path/to/comparison_unet_resnet18.pt --open
+```
+
+Here `--data-root` contains `data/processed/test/{images,masks}/`; it is not the
+images directory itself. The script reports missing inputs instead of downloading
+files or training. To preview an input before starting the recorded command:
+
+```bash
+open verification/handoff-evaluation-2026-11-09/data/processed/test/images/22828930_15_patch_00.png
+```
+
+Test 0 has clearly visible buildings and imperfect but useful predictions; it is
+the first test row, not a selected best score. Test 113 demonstrates the comparison
+model's large omission. Fresh CPU comparison on test 113 gives patch IoU about
+**0.0842**, while the recorded release probabilities give **0.0848**: five binary
+pixels differ at threshold 0.5. The demo agrees exactly with the previously checked
+fresh CPU probabilities, and does not substitute the historical result.
+
+Suggested recording flow: show input; run the command while narrating; show test 0
+and its four panels; use the page link to show test 113 and explain the untested
+boundary/context hypothesis. If presenting full-test numbers, label the separate
+360-patch table clearly. Finish by stating that evaluation was verified from
+weights and training was not rerun. On Mac, press Shift–Command–5, choose a recording
+area and select your microphone in Options; see
+[Apple's screen-recording instructions](https://support.apple.com/en-euro/guide/mac-help/mh26782/mac).
+
 ## Remaining handoff and verification
 
-- Person 1: baseline checkpoint/hash, actual baseline environment and timing,
-  original training execution order, data license and content/geographic leakage checks.
-- Person 2: confirm the published comparison assets are the final intended run.
-- Person 3: publish baseline caches or regenerate them from the historical checkpoint;
-  add likely causes for at least three concrete failures, confirm fixed vs selected
-  thresholds, and commit the existing results-checkpoint report if it is a team source.
-- Person 4: integrate those artifacts, rerun complete evaluation from a clean
-  environment, record actual commands/times, then assemble the final summary and demo.
+- Person 1: complete baseline environment/execution-order records, data license
+  and content/geographic leakage checks; baseline timing remains a progress-bar estimate.
+- Person 3: agree on the draft's tentative failure interpretations and commit the
+  existing results-checkpoint report if it is a team source.
+- Team: agree on shared contributions and final submission artifacts.
+- Person 4: package weight/data access and audit evidence for handoff, finalize
+  the two-page summary, and record the demo after a rehearsal.
 
-Local audit evidence is isolated under `verification/2026-11-09/` and ignored by Git;
-it must not replace `results/metrics/`. Successful installation, unit tests or a smoke
-inference do not establish full metric or training reproducibility.
+Local audit evidence is under the dated `verification/` directories and ignored by
+Git; it must not replace `results/metrics/`. The demo is a selected-patch inference
+demonstration; it does not rerun full evaluation or training.
 Use [REPRODUCIBILITY_CHECKLIST.md](REPRODUCIBILITY_CHECKLIST.md) before submission.
