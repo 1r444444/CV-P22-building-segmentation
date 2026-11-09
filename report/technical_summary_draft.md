@@ -67,16 +67,22 @@ Renata's results checkpoint report (pp. 2–3) and the
 [failure comparison](../figures/failure_comparison.png) describe three test examples
 at threshold 0.5, regenerated during verification:
 
-- **113, `23429020_15`, patch 05:** BCE detects most of a large building (IoU 0.833);
-  BCE + Dice misses most of it (0.085).
-- **216, `23579005_15`, patch 00:** both models partially detect a small building
-  and produce false positives; IoU is 0.147/0.172 for BCE/comparison.
-- **267, `23729035_15`, patch 15:** both produce false positives near water, with
-  almost no labelled building foreground; IoU is near zero.
+- **113, `23429020_15`, patch 05 — Observation:** a large roof is truncated at
+  the source-image boundary. BCE recovers most of it (IoU 0.833); BCE + Dice misses
+  most of it (0.085). **Possible cause:** limited spatial context may contribute
+  to the omission. This is an untested hypothesis and does not establish why the
+  models differ, especially since BCE succeeds on the same input.
+- **216, `23579005_15`, patch 00 — Observation:** the labelled building occupies
+  553 pixels (0.844% of the patch); both models recover only part of it and produce
+  false positives (IoU 0.147/0.172). **Possible cause:** its small spatial extent
+  may make the complete shape difficult to recover at this image resolution.
+- **267, `23729035_15`, patch 15 — Observation:** both models mark a bright object
+  at the water's edge, while GT contains only 18 foreground pixels; IoU is zero.
+  **Possible cause:** the false positives may reflect confusion between this
+  object and building foreground. Its identity is uncertain; an annotation error
+  has not been established.
 
-**To confirm with Renata:** add a case-specific likely cause for each failure.
-Existing descriptions mention small objects and visual ambiguity but do not
-adequately explain all three. No additional causes are assumed here.
+These explanations are visually motivated hypotheses, not demonstrated causes.
 
 ## 7. Reproducibility and runtime
 
@@ -110,7 +116,8 @@ additional contributions. Demo preparation is not claimed as completed.
 
 <!-- Evidence notes for review, excluded from the two-page body:
      Guidelines: /Users/irina/Downloads/Computer_Vision_Project_Guidelines.pdf, pp. 1–3;
-     p. 2 requires three failure cases with likely causes, which remain incomplete.
+     p. 2 requires three failure cases with likely causes; the draft now separates
+     reproduced observations from visually motivated, untested explanations.
      Data: notebooks/02_prepare_subset.ipynb, cells 4–6, 13–16; src/preprocessing.py.
      Models: notebooks/04_baseline.ipynb, cells 11–16;
      notebooks/05_comparison_bce_dice.ipynb, cells 12–18; COMPARISON_RUN.md.
@@ -119,6 +126,10 @@ additional contributions. Demo preparation is not claimed as completed.
      Runtime: Kristina's messages supplied by the user; results/metrics/comparison_run.json.
      Failures: /Users/irina/Downloads/ResultsCheckpointSubmission_P22.pdf, pp. 2–3;
      notebooks/06_evaluation.ipynb, cells 9–11, 16; its markdown adds no case-specific causes.
+     New hypotheses: verification/failure-review-2026-11-09/proposed-wording.md,
+     case-statistics.json and alignment-verification.json; checked against raw
+     images/masks and both models' predictions. Do not attribute these hypotheses
+     to Renata's original report or present them as tested mechanisms.
      Verification: verification/baseline-drive-evaluation-2026-11-09/verification-summary.json,
      notebook-execution.json, baseline-evaluation-verification.json;
      verification/handoff-evaluation-2026-11-09/results/comparison-metric-verification.json
@@ -128,5 +139,5 @@ additional contributions. Demo preparation is not claimed as completed.
      Contributions: ProjectPlanSubmission_P22.pdf, Team Responsibilities; Kristina's handoff;
      commits b378de7/2c418ba (kriss), b247240 (Renata); COMPARISON_RUN.md and
      SecondApproachSubmission_P22.tex (Elena); audit history and verification (Irina).
-     Finalize: clarify failure causes, license and shared contributions; package evidence;
+     Finalize: agree on tentative failure interpretations, license and shared contributions; package evidence;
      then typeset and verify no more than two pages. No PDF or slides generated. -->
