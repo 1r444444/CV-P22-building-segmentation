@@ -1,10 +1,10 @@
 # Verification evidence - 9 November 2026
 
-These are lightweight copies of **already completed** local checks, not new
-experimental results. Original logs, weights, probability archives and outputs
-remain unchanged under the ignored `verification/` directories. Absolute project
-paths in these JSON copies are made repository-relative; numbers and booleans are
-unchanged. `provenance.json` records the original source paths and SHA-256 values.
+These files record completed checkpoint-evaluation and integration checks.
+They retain measured values, sample identities and artifact hashes. The original
+artifact identifiers in `provenance.json` and the protocols are provenance
+references; they are not required input locations for a new run. Full datasets,
+checkpoints and probability archives are external artifacts described in README.
 
 | Record | Scope |
 | --- | --- |
