@@ -17,6 +17,10 @@ Integration status (2026-11-09): installation, imports, loss tests and an eight-
 CPU inference smoke test were checked in a fresh Python 3.11 environment on macOS.
 Full-split metric reproduction and retraining have **not** been performed in this
 audit. Recorded notebook outputs and CSVs remain historical experiment results.
+Full project reproducibility remains unverified while the historical baseline
+checkpoint and complete evaluation caches are unavailable locally. Recovering
+those artifacts and the processed evaluation data must be followed by a successful
+full-split evaluation; the smoke test does not satisfy that requirement.
 
 ## Project Requirements
 
@@ -280,8 +284,10 @@ Recorded results live in `results/metrics/`, selected binary masks in
 `results/predictions/`, and figures in `figures/`. The main comparison table is
 `comparison_initial_comparison.csv`; sensitivity is `threshold_sensitivity_all_models.csv`.
 The milestone PDF is `report/SecondApproachSubmission_P22.pdf`, **not** the final
-technical summary. The final summary remains an unfilled template and is intentionally
-not authored during this audit. No demo slides were created.
+technical summary. An [audit-backed draft skeleton](report/technical_summary_draft.md)
+contains confirmed implementation facts and explicit placeholders for verified
+final metrics, figures, failure explanations and actual contributions. It is not
+a completed submission; the original template is retained. No demo slides were created.
 
 Comparison run: Python 3.12.3, Linux, RTX 5070; training including epoch validation
 312.19 s; test evaluation including loading/loss/metrics over 360 patches 1.49 s.
