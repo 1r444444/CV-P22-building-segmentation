@@ -148,6 +148,7 @@ activemq-data/
 *.sage.py
 
 # Environments
+.venv-*/
 .env
 .envrc
 .venv
@@ -269,3 +270,6 @@ data/processed/
 
 # Generated baseline probability maps
 /results/baseline_probabilities/
+
+# Separate verification runs; never mix these with submitted results.
+/verification/

@@ -1,11 +1,10 @@
-# Project dependencies are TBD.
-# Add exact packages and versions after the dataset and model code is finalized.
-# Format: package==version
+# CPU/macOS inference and evaluation. Tested with Python 3.11.
+# Recorded CUDA training uses requirements-comparison.txt and Python 3.12.
 numpy==2.1.3
 pandas==2.2.3
 matplotlib==3.10.0
 Pillow==11.3.0
-torch==2.11.0+cu130
-torchvision==0.26.0+cu130
+torch==2.11.0
+torchvision==0.26.0
 segmentation-models-pytorch==0.5.0
 tqdm==4.67.3
