@@ -1,0 +1,106 @@
+{
+  "events": [
+    {
+      "event": "run_start",
+      "name": "first"
+    },
+    {
+      "event": "checkpoint_load",
+      "path": "verification/baseline-drive-evaluation-2026-11-09/downloads/baseline_unet_resnet18.pt"
+    },
+    {
+      "event": "model_forward",
+      "shape": [
+        2,
+        3,
+        256,
+        256
+      ]
+    },
+    {
+      "event": "checkpoint_load",
+      "path": "verification/2026-11-09/downloads/comparison_unet_resnet18.pt"
+    },
+    {
+      "event": "model_forward",
+      "shape": [
+        2,
+        3,
+        256,
+        256
+      ]
+    },
+    {
+      "event": "run_start",
+      "name": "second"
+    },
+    {
+      "event": "checkpoint_load",
+      "path": "verification/baseline-drive-evaluation-2026-11-09/downloads/baseline_unet_resnet18.pt"
+    },
+    {
+      "event": "model_forward",
+      "shape": [
+        2,
+        3,
+        256,
+        256
+      ]
+    },
+    {
+      "event": "checkpoint_load",
+      "path": "verification/2026-11-09/downloads/comparison_unet_resnet18.pt"
+    },
+    {
+      "event": "model_forward",
+      "shape": [
+        2,
+        3,
+        256,
+        256
+      ]
+    }
+  ],
+  "npz_reads_forbidden_during_inference": true,
+  "old_prediction_png_reads_forbidden": true,
+  "both_runs_identical": true,
+  "browser_open_flag_checked": true,
+  "comparisons": [
+    {
+      "model": "baseline",
+      "test_index": 0,
+      "max_abs_probability_difference_from_verified_cpu": 0.0,
+      "different_binary_pixels_from_verified_cpu": 0
+    },
+    {
+      "model": "baseline",
+      "test_index": 113,
+      "max_abs_probability_difference_from_verified_cpu": 0.0,
+      "different_binary_pixels_from_verified_cpu": 0
+    },
+    {
+      "model": "bce_dice",
+      "test_index": 0,
+      "max_abs_probability_difference_from_verified_cpu": 0.0,
+      "different_binary_pixels_from_verified_cpu": 0
+    },
+    {
+      "model": "bce_dice",
+      "test_index": 113,
+      "max_abs_probability_difference_from_verified_cpu": 0.0,
+      "different_binary_pixels_from_verified_cpu": 0
+    },
+    {
+      "model": "bce_dice_vs_release",
+      "test_index": 0,
+      "max_abs_probability_difference": 0.0020674467086791992,
+      "different_binary_pixels": 2
+    },
+    {
+      "model": "bce_dice_vs_release",
+      "test_index": 113,
+      "max_abs_probability_difference": 0.0026231706142425537,
+      "different_binary_pixels": 5
+    }
+  ]
+}

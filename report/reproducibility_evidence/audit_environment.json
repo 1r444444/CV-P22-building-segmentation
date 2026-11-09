@@ -1,0 +1,18 @@
+{
+  "evaluation_code_commit": "5ec84aa294434b11daa1c8bc13fcde13c1dbb19b",
+  "runtime": {
+    "python": "3.11.15",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "device": "cpu",
+    "packages": {
+      "torch": "2.11.0",
+      "torchvision": "0.26.0",
+      "segmentation-models-pytorch": "0.5.0",
+      "numpy": "2.1.3",
+      "pandas": "2.2.3",
+      "Pillow": "11.3.0",
+      "matplotlib": "3.10.0"
+    }
+  },
+  "training_reproduced": false
+}

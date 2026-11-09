@@ -1,0 +1,32 @@
+{
+  "device": "cpu",
+  "checkpoint": "Verified released comparison checkpoint",
+  "scope": "Full 144 validation and 360 test patches, inference only",
+  "training_performed": false,
+  "checks": [
+    {
+      "split": "val",
+      "patches": 144,
+      "max_probability_absolute_difference": 0.01187586784362793,
+      "mean_probability_absolute_difference": 2.2220956452656537e-05,
+      "threshold_0_5_different_binary_pixels": 215,
+      "fresh_iou": 0.6159929978326506,
+      "fresh_dice": 0.7623708749466275,
+      "iou_difference": -2.387028202599506e-05,
+      "dice_difference": -1.8281093991934227e-05,
+      "matches_report_at_four_decimal_places": true
+    },
+    {
+      "split": "test",
+      "patches": 360,
+      "max_probability_absolute_difference": 0.014414012432098389,
+      "mean_probability_absolute_difference": 4.32077758887317e-05,
+      "threshold_0_5_different_binary_pixels": 955,
+      "fresh_iou": 0.6680798694327525,
+      "fresh_dice": 0.8010166439571504,
+      "iou_difference": -1.3312077321803173e-05,
+      "dice_difference": -9.568385819225256e-06,
+      "matches_report_at_four_decimal_places": true
+    }
+  ]
+}

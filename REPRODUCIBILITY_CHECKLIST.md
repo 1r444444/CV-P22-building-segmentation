@@ -22,47 +22,64 @@ Local fixes: `audit/reproducibility-2026-11-09`. Both remote experiment branches
 ancestors of main; the comparison release is a prerelease and is not a final tag.
 No applicable AGENTS.md was found in repository/ancestor directories.
 
-The submission checklist above remains unchecked intentionally: partial tests do
-not establish a clean full reproduction.
+The top-level checklist remains a final clean-clone acceptance checklist. The
+dated checks below describe what actually ran; they do not claim training was
+reproduced or that the final GitHub already contains these local changes.
 
 - [x] Installed the portable runtime/notebook dependencies in a fresh macOS arm64
   Python 3.11.15 venv; `pip check` passes. Original CUDA-only requirements fail here.
 - [x] Direct `python -m nbconvert` uses the venv correctly; the old
   `python -m jupyter nbconvert` dispatcher selected an unrelated system installation.
-- [x] Four original loss tests and four cache alignment/completeness tests pass.
+- [x] Twelve tests pass: four original loss tests, four cache alignment/completeness
+  tests and four demo integration tests.
 - [x] Parsed all notebook code cells; no syntax errors. No mandatory author-local
   absolute paths in executable sources were found; saved output paths are historical.
 - [x] Split CSV counts/patch IDs/source disjointness and hashes match the recorded
   comparison manifest (4932/144/360 patches; 137/4/10 sources).
 - [x] Manifest hashes of preprocessing, loss, comparison support and both training
   notebooks match; training code/conditions were not changed by this audit.
-- [x] Downloaded comparison checkpoint and verified SHA-256. Prepared eight first
-  test patches from one primary-source TIFF pair with the existing notebook 02
-  functions; all eight foreground fractions match the committed CSV.
-- [x] CPU inference on those eight patches succeeds with probabilities `(8,1,256,256)`.
-  Binary masks differ from the historical CUDA-selected PNGs by 1–5 pixels per
-  patch (18 pixels total). This is a smoke test, not exact/full reproduction.
+- [x] Downloaded comparison checkpoint and full release caches; SHA-256 checks
+  pass. Restored all 4 validation and 10 test source PNG pairs from the recorded
+  archive and regenerated 144/360 patches with existing preparation functions.
+  Regenerated val/test split CSVs are byte-identical to the committed files.
+- [x] Downloaded the baseline Drive checkpoint: 57,427,223 bytes, SHA-256
+  `1459948c249d7133a1c5115379122c17e0a1433429f168bfffe8a1dfddec20b0`.
+  All tensor values are finite and strict U-Net/ResNet18 state-dict loading passes.
+- [x] Full baseline CPU inference on 144 validation and 360 test patches matches
+  all four saved IoU/Dice values at 0.5 exactly; all eight published masks match.
+- [x] Full comparison release-cache metrics match exactly. Full fresh CPU
+  checkpoint inference matches four-decimal reported precision; small probability
+  and binary-mask differences are recorded rather than hidden.
 - [x] Saved metric CSVs agree with training histories, the initial comparison,
   sensitivity values at threshold 0.5 and the IoU/Dice relationship. The separate
   validation-selected threshold experiment is explicitly distinguished in README.
-- [x] Recreated the comparison table from saved scalar metrics and two threshold
-  plots from saved CSVs in a separate verification directory. This does not
-  recompute metrics from predictions or regenerate data-dependent failure images.
-- [ ] Full notebook 06 evaluation: the real fresh-kernel run executes cells 1–3
-  and stops at cell 4 with missing `results/comparison_probabilities/val.npz`.
-  Both complete val/test cache sets and processed data are needed. Baseline
-  checkpoint/caches have no published handoff location.
-- [ ] All 144 validation / 360 test predictions and metrics reproduced from weights.
+- [x] Notebook 06 executed all 14 code cells sequentially with complete caches and
+  processed patches. Its two sensitivity tables agree at four decimals; four
+  regenerated figures have small raster-dimension differences (1–3 pixels).
+- [x] Failure cases 113, 216 and 267 checked against raw images, ground truth and
+  both predictions. The summary separates observations from untested hypotheses;
+  the boundary/context hypothesis does not establish why models differ on 113.
+- [x] Two fresh demo runs on test 0 and 113 loaded both checkpoints and executed
+  both models each time. Existing caches/old prediction PNGs were blocked during
+  inference; results equal the earlier verified CPU probabilities exactly.
+- [x] Two-page summary typeset from the existing Markdown with 11 pt body text;
+  page count and rendered pages checked. Irina's demo development/testing included.
+- [ ] Final clean-clone acceptance after publishing the reviewed audit changes:
+  repeat setup, data restoration, full checkpoint exports and notebook 06 using
+  only the published instructions/artifact links, without audit-local fallbacks.
 - [ ] Training reproduced: not attempted; needs the intended CUDA environment,
   complete dataset and confirmation of historical baseline execution order.
 - [ ] Dataset license, content/geographic leakage checks and baseline runtime and
   complete software environment confirmed by Person 1.
-- [ ] Final intended run/threshold convention and substantive likely causes for
-  three failure cases confirmed by Persons 2–3.
-- [ ] Final member contributions, final technical summary and demo assembled.
-  The summary and slides were intentionally not created in this audit.
+- [ ] Team agreement on tentative failure interpretations and shared contributions.
+- [ ] Recorded-demo URL added and access checked. The user confirms the video is
+  recorded; the recording has not been reviewed by this audit.
+- [ ] Final repository publication and any slides required for the submission.
+  No slides/video were created and nothing was pushed by this audit.
 
-Local logs, freeze, smoke outputs and regenerated figures are in
-`verification/2026-11-09/` (ignored). They must not replace submitted artifacts.
+Full local logs, caches and regenerated figures remain in the dated `verification/`
+directories (ignored). Lightweight copies with relative paths and provenance are
+in `report/reproducibility_evidence/`; see `FINAL_HANDOFF.md` for publication scope.
+They must not replace submitted experimental artifacts.
 The existing `Downloads/ResultsCheckpointSubmission_P22.pdf` is an external
 three-page results checkpoint, not a committed final two-page technical summary.

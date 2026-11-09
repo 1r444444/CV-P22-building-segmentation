@@ -231,17 +231,60 @@ In a fresh clone, save the checkpoint as `results/baseline_unet_resnet18.pt` and
 restore processed data as described above. Then export without retraining:
 
 ```bash
+.venv/bin/python - <<'PYTHON'
+import hashlib
+from pathlib import Path
+path = Path('results/baseline_unet_resnet18.pt')
+assert path.stat().st_size == 57427223
+with path.open('rb') as stream:
+    assert hashlib.file_digest(stream, 'sha256').hexdigest() == \
+        '1459948c249d7133a1c5115379122c17e0a1433429f168bfffe8a1dfddec20b0'
+print('Baseline checkpoint size and SHA-256 verified')
+PYTHON
 .venv/bin/python src/generate_baseline_probabilities.py \
   --checkpoint results/baseline_unet_resnet18.pt \
-  --output-dir verification/eval-inputs/baseline_probabilities
+  --device cpu --output-dir verification/eval-inputs/baseline_probabilities
 ```
 
-Restore the comparison caches and checksum file using the `gh release download`
-commands in [COMPARISON_RUN.md](COMPARISON_RUN.md#produced-artifacts), adapting their
-`--dir` values to `verification/eval-inputs/comparison_probabilities` and checking
-SHA-256 against `comparison_artifact_checksums.txt`. Or generate them from the
-verified comparison checkpoint with the exporter and that output directory.
-The release caches total about 123 MB; they were not downloaded by the local audit.
+For fresh full comparison inference, use the same exporter and processed data:
+
+```bash
+.venv/bin/python src/generate_baseline_probabilities.py \
+  --checkpoint verification/artifacts/comparison_unet_resnet18.pt \
+  --device cpu --output-dir verification/eval-inputs/comparison_probabilities
+```
+
+Both commands export all 144 validation and 360 test patches; neither trains.
+As an alternative for the exact historical comparison scores, download its release
+caches and checksum file (about 123 MB):
+
+```bash
+mkdir -p verification/eval-inputs/comparison_probabilities
+curl -L --fail --output verification/eval-inputs/comparison_probabilities/val.npz \
+  https://github.com/1r444444/CV-P22-building-segmentation/releases/download/comparison-bce-dice-2026-10-19/val.npz
+curl -L --fail --output verification/eval-inputs/comparison_probabilities/test.npz \
+  https://github.com/1r444444/CV-P22-building-segmentation/releases/download/comparison-bce-dice-2026-10-19/test.npz
+curl -L --fail --output verification/eval-inputs/comparison_probabilities/comparison_artifact_checksums.txt \
+  https://github.com/1r444444/CV-P22-building-segmentation/releases/download/comparison-bce-dice-2026-10-19/comparison_artifact_checksums.txt
+.venv/bin/python - <<'PYTHON'
+import hashlib
+from pathlib import Path
+folder = Path('verification/eval-inputs/comparison_probabilities')
+expected = {
+    'val.npz': 'edba5c9b24f556f920efe5ff38f928b6e28594e25582b4c2142e9e058962bf47',
+    'test.npz': 'cbae3cef0b4064e233a6df93e3e26a8cca2b8335aa09d0dd0637a474c4cebced',
+}
+for name, digest in expected.items():
+    with (folder / name).open('rb') as stream:
+        assert hashlib.file_digest(stream, 'sha256').hexdigest() == digest, name
+    print(name, 'SHA-256 verified')
+PYTHON
+```
+
+Choose **either** fresh comparison inference **or** release cache restoration into
+this directory; keep separate directories if comparing both. The local audit
+checked both routes. Cached comparison metrics match exactly; fresh CPU inference
+matches the reported four-decimal precision, with small numerical differences.
 
 ## Evaluation and artifact regeneration
 
@@ -294,7 +337,14 @@ Recorded results live in `results/metrics/`, selected binary masks in
 The milestone PDF is `report/SecondApproachSubmission_P22.pdf`, **not** the final
 technical summary. The [technical summary draft](report/technical_summary_draft.md)
 contains verified results, limitations and cautiously labelled failure hypotheses.
-Final typesetting and team agreement remain pending; no demo slides were created.
+The [two-page summary PDF](report/technical_summary_P22.pdf) is typeset from that
+source; both pages were visually checked. Rebuild with
+`python3 report/build_technical_summary.py` (requires `pdflatex` and Poppler's
+`pdfinfo`; these are report-build tools, not inference dependencies).
+Team agreement and the recorded-video URL remain pending; no demo slides were
+created by this audit. See [FINAL_HANDOFF.md](FINAL_HANDOFF.md) for the publication
+file list and [verification evidence](report/reproducibility_evidence/) for the
+lightweight audit records.
 
 Comparison run: Python 3.12.3, Linux, RTX 5070; training including epoch validation
 312.19 s; test evaluation including loading/loss/metrics over 360 patches 1.49 s.
@@ -304,6 +354,10 @@ manifest is committed. Hardware differences and one run per condition limit caus
 claims and prevent a direct runtime comparison.
 
 ## Recorded demo without retraining
+
+The team reports that the demo video has been recorded. **Video link: TO BE ADDED.**
+The recording has not been reviewed in this audit. The commands below repeat the
+working pipeline shown by the demo script.
 
 Use the existing `.venv-audit` on the audited Mac. From the repository root:
 
@@ -378,8 +432,8 @@ area and select your microphone in Options; see
 - Person 3: agree on the draft's tentative failure interpretations and commit the
   existing results-checkpoint report if it is a team source.
 - Team: agree on shared contributions and final submission artifacts.
-- Person 4: package weight/data access and audit evidence for handoff, finalize
-  the two-page summary, and record the demo after a rehearsal.
+- Person 4: publish the reviewed audit changes when authorized, add the recorded
+  demo URL, and rebuild/recheck the two-page PDF after final team agreement.
 
 Local audit evidence is under the dated `verification/` directories and ignored by
 Git; it must not replace `results/metrics/`. The demo is a selected-patch inference
