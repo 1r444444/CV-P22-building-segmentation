@@ -5,6 +5,9 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+import os
+import shlex
+import webbrowser
 
 import numpy as np
 import pandas as pd
@@ -47,6 +50,7 @@ def main(argv=None):
         ROOT / "verification/2026-11-09/downloads/comparison_unet_resnet18.pt"))
     parser.add_argument("--device", choices=["cpu", "cuda", "mps"], default="cpu")
     parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--open", action="store_true", help="Open the new local report in the default browser after inference.")
     args = parser.parse_args(argv)
     started = datetime.now(timezone.utc)
     output = (args.output_dir or ROOT / "verification/demo" / started.strftime("run-%Y%m%dT%H%M%S-%fZ")).resolve()
@@ -106,7 +110,13 @@ def main(argv=None):
         del model
     manifest["completed_utc"] = datetime.now(timezone.utc).isoformat()
     (output / "run.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    os.environ.setdefault("MPLCONFIGDIR", str(ROOT / ".cache/matplotlib"))
+    from scripts.demo_view import render_report
+    page = render_report(output, manifest, args.data_root)
     print("Saved fresh inference:", output, flush=True)
+    print("Open on Mac: open " + shlex.quote(str(page)), flush=True)
+    if args.open:
+        webbrowser.open(page.as_uri())
     return output
 
 
