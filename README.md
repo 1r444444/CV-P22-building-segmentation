@@ -12,7 +12,7 @@ The implemented experiment uses Massachusetts Buildings and U-Net + ResNet18.
 The changed factor is the loss; the architecture, source-level split and nominal
 training settings are shared. See [COMPARISON_RUN.md](COMPARISON_RUN.md).
 
-Integration status (2026-11-09): full checkpoint inference on 144 validation and
+Verified evaluation (2026-11-09): full checkpoint inference on 144 validation and
 360 test patches and sequential evaluation notebook 06 were checked on macOS CPU.
 Baseline IoU/Dice at threshold 0.5 and all eight published masks match exactly.
 Comparison release probabilities reproduce the recorded metrics exactly; fresh CPU
@@ -92,7 +92,7 @@ The full archive is about 1.6 GB; allow additional space for extraction and patc
 
 Run commands from the repository root. Do not use the system Python 3.14 with the
 pinned NumPy/pandas versions. The recorded comparison used Python 3.12.3 on Linux;
-the local CPU audit used Python 3.11.15 on macOS arm64.
+CPU verification used Python 3.11.15 on macOS arm64.
 
 CPU/macOS inference, evaluation and notebooks:
 
@@ -116,7 +116,7 @@ For the recorded CUDA training configuration, use **Python 3.12 and Linux/NVIDIA
 and follow [COMPARISON_RUN.md](COMPARISON_RUN.md#local-environment).
 `requirements-comparison.txt` retains `torch==2.11.0+cu130` and
 `torchvision==0.26.0+cu130` with the CUDA 13.0 index. This profile is not for macOS.
-A new installation/training run on that CUDA profile was not verified by this audit.
+A new installation/training run on that CUDA profile was not verified.
 
 ## Entry points and order
 
@@ -261,8 +261,8 @@ PYTHON
 ```
 
 Choose **either** fresh comparison inference **or** release cache restoration into
-this directory; keep separate directories if comparing both. The local audit
-checked both routes. Cached comparison metrics match exactly; fresh CPU inference
+this directory; keep separate directories if comparing both. Both routes were
+verified. Cached comparison metrics match exactly; fresh CPU inference
 matches the reported four-decimal precision, with small numerical differences.
 
 ## Evaluation and artifact regeneration

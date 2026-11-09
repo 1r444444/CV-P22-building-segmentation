@@ -38,7 +38,7 @@ done
 A Kaggle login/terms acceptance may be required depending on the service response.
 If the download returns HTML or the hash differs, stop and inspect it. The hash
 above is from the recorded experiment; the full download was not repeated in the
-2026-11-09 integration audit.
+2026-11-09 verification.
 
 ## Expected layout and preparation
 
@@ -85,12 +85,12 @@ The committed `data/splits/{train,val,test}.csv` files contain repository-relati
 paths and patch IDs. Their SHA-256 values are in
 `results/metrics/comparison_run.json`. Patches from one original image stay in one
 split; the committed source filename sets are disjoint. This does not establish
-geographical separation or absence of duplicate content, which still need checking.
+geographical separation or absence of duplicate content; these were not independently checked.
 
 The comparison notebook's `validate_comparison_data` checks counts, dimensions,
 readability, uniqueness and source-level separation. It does not prove pixel-level
 identity to the original dataset. Notebook 01 and the shared mask conversion were
-inspected, but the complete raw data were not validated by the local audit.
+inspected, but the complete raw data were not validated during verification.
 
 Raw data and generated patches are ignored by Git. The split CSVs are already
 tracked; do not use broad `git add -f data/` to publish datasets.

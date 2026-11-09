@@ -1,139 +1,100 @@
-# Final submission handoff - 9 November 2026
+# Final submission guide
 
-This is a publication inventory, not confirmation that anything was uploaded.
-The inspected GitHub `main` is `e61de6bc9e5fd0fe96de69380a041f9b56946737`.
-All audit changes remain local on `audit/reproducibility-2026-11-09`; no push was
-made. The final PDF is based on the existing Markdown, not a new report.
+Repository: https://github.com/1r444444/CV-P22-building-segmentation.
+The reproducibility integration was merged in [pull request #3](https://github.com/1r444444/CV-P22-building-segmentation/pull/3).
+This guide identifies the submitted materials, reproduction workflow and recorded
+verification scope.
 
-## Transfer from the audit branch
+## Submission contents
 
-Transfer the reviewed branch changes together, preserving existing code, split
-CSVs, metrics and figures already on main. Do not copy only the PDF/README.
-
-| Files changed or added locally versus main | Why transfer |
+| Material | Location |
 | --- | --- |
-| `requirements.txt`, `requirements-notebooks.txt`, `requirements-comparison.txt` | Portable inference/evaluation setup, notebook tools and separately recorded CUDA environment |
-| `src/generate_baseline_probabilities.py` | Checked checkpoint-only exporter for **either** model, complete sample identities and overwrite protection |
-| `notebooks/06_evaluation.ipynb` | Separate input/output roots and cache order/completeness validation; evaluation definitions unchanged |
-| `tests/test_integration.py` | Protect complete and correctly aligned evaluation caches |
-| `README.md`, `data/README.md`, `COMPARISON_RUN.md` | Setup, dataset layout/version, weights, full inference, evaluation and artifact instructions |
-| `.gitignore`, `REPRODUCIBILITY_CHECKLIST.md` | Keep heavy/local outputs separate and distinguish checks from unresolved requirements |
-| `scripts/demo_inference.py`, `scripts/demo_view.py`, `tests/test_demo.py` | Repeatable demo with fresh forward passes and clearly labelled per-patch scores |
-| `report/technical_summary_draft.md`, `report/build_technical_summary.py`, `report/technical_summary_P22.pdf` | Editable content, reproducible typesetting and visually checked two-page PDF |
-| `report/reproducibility_evidence/README.md`, `audit_environment.json`, `baseline_checkpoint.json`, `baseline_evaluation.json`, `comparison_cached_metrics.json`, `comparison_fresh_inference.json`, `notebook_execution.json`, `notebook_output_comparison.json`, `demo_fresh_runs.json`, `provenance.json` (all JSONs in that directory) | Lightweight evidence for the report's verification claims; original protocols preserved locally |
-| `report/reproducibility_evidence/final_acceptance.json`, `public_artifact_access.json`, `clean_copy_environment.txt` (all in that directory) | New clean-copy checks, anonymous artifact access and exact fresh environment |
-| `FINAL_HANDOFF.md` | This inventory and remaining acceptance checks |
+| Two-page technical summary | [PDF](report/technical_summary_P22.pdf), [editable source](report/technical_summary_draft.md), [PDF builder](report/build_technical_summary.py) |
+| Recorded pipeline demo | [Google Drive video](https://drive.google.com/file/d/12eeFMhpknbHesvbJhntL6vVybsqNM__O/view?usp=sharing) |
+| Setup and exact launch commands | [README.md](README.md) |
+| Dataset version, layout and preparation | [data/README.md](data/README.md), `data/splits/`, notebook 02 |
+| Checkpoint-only inference | `src/generate_baseline_probabilities.py`; accepts either model checkpoint |
+| Evaluation and sensitivity | `notebooks/06_evaluation.ipynb` |
+| Selected-patch demo | `scripts/demo_inference.py`, `scripts/demo_view.py` |
+| Submitted metrics and predictions | `results/metrics/`, `results/predictions/` |
+| Submitted figures | `figures/` |
+| Verification records | [evidence index](report/reproducibility_evidence/README.md), [checklist](REPRODUCIBILITY_CHECKLIST.md) |
 
-`git diff --name-status origin/main` plus `git ls-files --others --exclude-standard`
-shows the final local inventory, including uncommitted additions. Existing
-`src/preprocessing.py`, `src/losses.py`, `src/comparison.py`, training/preparation
-notebooks, `data/splits/`, `results/metrics/`, `results/predictions/` and `figures/`
-are already on main and still needed. Their experimental contents were not changed.
+## Reproduce the evaluation
 
-## External artifacts and independent launch
+1. Follow README to create a Python 3.11 environment from
+   `requirements-notebooks.txt` and register its Jupyter kernel.
+2. Obtain Kaggle repack version 2 and prepare the original source-level split
+   with notebook 02. The full archive is about 1.6 GB. For evaluation, only the
+   **144 validation and 360 test patches**, with their ground-truth masks, are needed.
+   Full sequential preparation also uses training examples; keep the committed
+   split CSVs for comparison when regenerating them.
+3. Restore the baseline and comparison checkpoints using README's links and
+   verify the documented sizes/SHA-256 values. Weights are external artifacts,
+   not files included in Git. The baseline hash fingerprints the received file;
+   it was not an independently supplied author checksum.
+4. Use the exporter with each checkpoint to produce full probabilities in
+   separate output directories. For exact historical comparison results,
+   the comparison release also supplies complete val/test probability caches.
+5. Run notebook 06 using README's input/output environment variables. It checks
+   cache shapes, identities and order, computes the metrics and sensitivity,
+   and writes two CSVs and four figures separately from submitted results.
+6. To inspect individual predictions, run the demo command on test 0 and 113.
+   It loads both checkpoints, performs fresh inference and displays input,
+   ground truth and both predictions at threshold **0.5**. Its displayed IoU/Dice
+   describe each patch, not the whole test set.
 
-1. Install the README notebook environment in a fresh `.venv` and register its
-   kernel. No `.venv-audit` or author-local path should be required.
-2. Obtain the recorded Kaggle v2 raw archive and prepare patches using notebook 02
-   in a separate working copy. Verify split CSVs against the committed originals.
-   Evaluation needs 144 validation and 360 test patches and ground-truth masks.
-   The full download is about 1.6 GB; archive extraction requires additional space.
-3. Download the baseline checkpoint from README's Drive link and check its listed
-   size/SHA-256. Current Drive permission metadata shows `anyone: writer`, so
-   link sharing is enabled with editing rights. Prefer reader access for the
-   submitted weight artifact; permissions were not changed by this audit.
-   An anonymous range download passed after Google's confirmation page; no full
-   repeat download or teacher-specific account/network test was performed. The hash is
-   a measured received-file fingerprint, not an independently supplied author hash.
-4. Download the comparison checkpoint from the named GitHub release and verify
-   its manifest hash. Generate both models' full caches with the checked exporter,
-   or use the verified release caches for historical comparison results.
-5. Execute notebook 06 using README's `P22_RESULTS_ROOT`/`P22_EVAL_OUTPUT_ROOT`
-   command. Keep fresh exports/figures separate from `results/` and `figures/`.
+Baseline probability caches do not need a separate download: the exporter
+regenerates them from the checkpoint. The demo script is optional for full
+result reproduction; the exporter and notebook 06 provide that workflow.
 
-There is **no requirement to publish baseline probability caches**: the documented
-exporter regenerates them from the baseline checkpoint. Sharing them separately
-could save time, but is not necessary. Weights/data/caches must remain available
-through external links; neither this Git clone nor the evidence JSONs contain them.
-Do not transfer `.venv*`, full `verification/`, raw/processed datasets or checkpoints
-into normal Git history. The prepared-data Drive archive was not needed/downloaded
-or content-validated by this audit and is not required by the documented raw-data
-route; anonymous range access passed. Its Drive metadata also shows `anyone: writer`.
+## Recorded checks
 
-## Completed clean-copy and link checks
+Full checkpoint evaluation was checked on 9 November 2026 using macOS arm64,
+Python 3.11.15, PyTorch 2.11.0 and segmentation-models-pytorch 0.5.0.
 
-The checked executable code is audit commit `c9e571c`; subsequent handoff changes
-only document the results and add evidence. A local Git clone contained tracked
-source files only, followed by a **new `.venv`** installed from
-`requirements-notebooks.txt`. No existing author venv/source imports were used.
-Previously verified external val/test PNGs and both checkpoints were physically
-copied to the paths documented in README, with identities/hashes checked.
+| Check | Recorded outcome |
+| --- | --- |
+| Fresh environment installation and dependency consistency | Passed; all 12 tests passed |
+| Baseline full val/test inference at 0.5 | IoU/Dice match exactly; eight published masks match exactly |
+| Comparison release-cache evaluation | Main metrics match exactly |
+| Comparison fresh CPU inference at 0.5 | All main metrics agree at four decimals |
+| Notebook 06 | All 14 code cells completed in order for both input routes |
+| Sensitivity from released comparison caches | All values agree at four decimals |
+| Fresh CPU sensitivity | Comparison val Dice at 0.3 is 0.7653 versus release 0.7654; selected thresholds remain 0.5/0.3 |
+| Demo test 0/113 | Fresh probabilities match the earlier verified CPU predictions exactly |
+| Evaluation-data preparation functions | All 144/360 patches and both split CSVs regenerated byte-for-byte |
+| Artifact access | Anonymous bounded HTTP reads succeeded for raw data, weights, caches and demo |
 
-- Installation, `pip check` and all **12 tests** passed.
-- Both checkpoint exports completed on **144 validation / 360 test** patches.
-  Baseline IoU/Dice at 0.5 and eight published masks match exactly. Fresh CPU
-  comparison val IoU/Dice are 0.6159929978/0.7623708749, test 0.6680798694/0.8010166440;
-  all agree with the main reported metrics at four decimals.
-- Notebook 06 completed **all 14 code cells** and generated two sensitivity CSVs
-  and four figures, separately for fresh CPU outputs and released comparison
-  caches. Fresh CPU comparison val Dice at 0.3 is 0.7653325307 versus release
-  0.7653526677 (0.7653/0.7654); validation-selected thresholds remain 0.5/0.3.
-  With released comparison caches, all sensitivity values agree at four decimals.
-- Fresh demo test 0/113 loaded both weights and executed both models. Its
-  probabilities equal the earlier verified CPU demo exactly. The new README
-  command explicitly uses the comparison checkpoint in `verification/artifacts/`.
-- Existing notebook 02 functions regenerated the 144/360 evaluation patches from
-  all 14 available raw source pairs; PNGs and split CSVs match byte-for-byte.
-  This does not claim a full sequential preparation notebook run with train data.
-- Anonymous requests returned HTTP 206/file bytes for the Kaggle v2 raw archive,
-  baseline checkpoint, comparison release weights/caches/checksum and agreed demo.
-  Large Drive files require a public download confirmation. This supports access
-  without login at check time, not full repeat downloads or video playback.
-- The final summary remains a **two-page PDF** with the correct clickable demo URL.
-  Experimental metrics, selected predictions, training notebooks, splits and
-  figures are unchanged from `main`; generated outputs are separate.
+The [acceptance record](report/reproducibility_evidence/final_acceptance.json)
+contains exact values and commands. The [environment snapshot](report/reproducibility_evidence/clean_copy_environment.txt)
+records the fresh CPU dependency versions. The [artifact access record](report/reproducibility_evidence/public_artifact_access.json)
+describes the bounded download checks; large Google Drive files may require
+confirmation before downloading.
 
-Full 1.6 GB raw download, sequential notebook 02 on the training split, training
-from scratch and a new Linux/CUDA setup were not repeated. Raw training files are
-not present in the acceptance copy; they are unnecessary for checkpoint evaluation.
-The default sandbox initially blocked Jupyter loopback ports; the same notebook
-command succeeded with local kernel ports permitted. This is an execution-
-environment restriction, not a missing project file.
+## Scope and interpretation
 
-The tracked lightweight records are under `report/reproducibility_evidence/`.
-Full logs and helper scripts remain local in
-`verification/final-handoff-2026-11-09/`; the clean copy and its newly generated
-outputs remain at `/private/tmp/p22-final-check-20261109-v1/repo` and are not
-published. Do not describe those local paths as available to the teacher.
+Evaluation was repeated from saved weights; **training from scratch was not
+repeated**. The clean-copy check used previously verified external evaluation
+files and checkpoints. The full raw download, full sequential preparation with
+training data and a new Linux/CUDA installation were not repeated.
 
-### Is `scripts/demo_inference.py` required?
+Source filenames are disjoint across splits; geographic/content duplication
+was not independently excluded. Complete historical baseline environment and
+execution-order records are unavailable. Runtime figures use different hardware
+and timing boundaries and do not establish a speed comparison.
 
-It is **not required for full result reproduction**. The already checked
-`src/generate_baseline_probabilities.py --checkpoint ... --output-dir ...`
-accepts either state dict, applies common preprocessing and exports full validation/
-test probabilities; notebook 06 then computes global metrics, sensitivity and
-figures. README contains both checkpoint commands and the notebook launch command.
+The submitted metrics, predictions, model code, split CSVs and figures are retained.
+Fresh outputs are written separately. The included evidence files are lightweight
+records; they do not contain full datasets, checkpoints or probability caches.
 
-Include the demo script anyway to reproduce the recorded demonstration simply.
-It requires its sibling `scripts/demo_view.py`; it loads both checkpoints afresh,
-uses threshold 0.5, and displays test 0/113 with input, GT and both predictions.
-The demo's patch IoU/Dice do not replace global evaluation.
+## Rebuild the technical summary
 
-## Remaining before submission
+```bash
+python3 report/build_technical_summary.py
+```
 
-- The agreed demo URL and contribution wording are already in README/summary;
-  anonymous video range access passed. Check browser playback from another
-  account/device if desired before handing in the link.
-- Obtain dataset license/usage terms from Person 1 and retain the documented
-  limits on geographic/content leakage and the baseline environment history.
-- Prefer reader access for the two currently editable Drive artifacts; no sharing
-  permissions were changed. Preserve the recorded checkpoint SHA-256.
-- Local clean-copy acceptance passed within the scope above. Recheck a remote
-  clean clone if the published executable sources differ from those tested.
-- Publish the reviewed branch and PDF only after authorization; provide the final
-  repository link/commit. No final release/tag is currently established by this audit.
-- Check the separate slide requirement (maximum three); this task creates no slides
-  or video and does not claim an existing final slide deck.
-
-PDF build: `python3 report/build_technical_summary.py` requires system `pdflatex`
-and `pdfinfo`. These tools are not dependencies for running the vision models.
+The report build requires system `pdflatex` and Poppler's `pdfinfo`, separately
+from inference dependencies. The builder checks exactly two pages; the rendered
+pages should also be inspected after content changes. The summary includes the
+team-contribution table and a clickable recorded-demo link.
