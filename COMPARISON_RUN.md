@@ -55,7 +55,7 @@ single-run comparison as proof of statistical significance.
 Use Python 3.12 and a working NVIDIA driver. From the repository root:
 
 ```bash
-python3 -m venv .venv
+python3.12 -m venv .venv
 .venv/bin/python -m pip install -r requirements-comparison.txt
 .venv/bin/python -m ipykernel install --prefix .venv --name p22-comparison --display-name "P22 Comparison (.venv)"
 .venv/bin/python -m unittest discover -s tests -v
@@ -64,9 +64,10 @@ nvidia-smi
 .venv/bin/python -c 'import torch; print(torch.__version__); print(torch.cuda.is_available()); print(torch.cuda.get_device_name(0))'
 ```
 
-The baseline pins `torch==2.11.0+cu130` and `torchvision==0.26.0+cu130`.
-`requirements-comparison.txt` adds the official CUDA 13.0 wheel index rather than
-replacing those versions. CPU checks of the loss are not training results.
+The recorded experiment uses `torch==2.11.0+cu130` and `torchvision==0.26.0+cu130`.
+`requirements-comparison.txt` pins those builds and adds the official CUDA 13.0
+wheel index. The main `requirements.txt` uses portable builds of the same versions
+for CPU/macOS checks; see README.md. CPU checks of the loss are not training results.
 
 ## Data prerequisites
 
@@ -123,9 +124,11 @@ may download the ImageNet encoder weights; internet is required for that cache m
 
 Alternatively, execute and save from the repository root:
 
+Use a separate clone for training reruns so historical outputs are retained.
+
 ```bash
-.venv/bin/python -m jupyter nbconvert --to notebook --execute --inplace \
-  --ExecutePreprocessor.timeout=-1 notebooks/05_comparison_bce_dice.ipynb
+.venv/bin/python -m nbconvert --to notebook --execute --inplace \
+  --ExecutePreprocessor.kernel_name=p22-comparison --ExecutePreprocessor.timeout=-1 notebooks/05_comparison_bce_dice.ipynb
 ```
 
 Do not rerun the training cell in isolation: this continues training from the

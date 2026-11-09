@@ -1,0 +1,44 @@
+[
+  {
+    "published_file": "baseline_evaluation.json",
+    "original_local_source": "verification/baseline-drive-evaluation-2026-11-09/baseline-evaluation-verification.json",
+    "original_sha256": "926aa69f559bdcb0a6d5370e14675f45a34f4460b60a4c626b9d8884829cba2e",
+    "normalization": "Project-absolute paths made repository-relative; numeric and boolean records unchanged."
+  },
+  {
+    "published_file": "baseline_checkpoint.json",
+    "original_local_source": "verification/baseline-drive-evaluation-2026-11-09/checkpoint-verification.json",
+    "original_sha256": "d3ab56abf0fc30275202f020ef356efbf5169f7febc913f46573ade37ec25e41",
+    "normalization": "Project-absolute paths made repository-relative; numeric and boolean records unchanged."
+  },
+  {
+    "published_file": "notebook_execution.json",
+    "original_local_source": "verification/baseline-drive-evaluation-2026-11-09/notebook-execution.json",
+    "original_sha256": "3695d82be49b53b4337519276c21fb9a90ee836f0dfc1473278e12f7848341fc",
+    "normalization": "Project-absolute paths made repository-relative; numeric and boolean records unchanged."
+  },
+  {
+    "published_file": "notebook_output_comparison.json",
+    "original_local_source": "verification/baseline-drive-evaluation-2026-11-09/notebook-output-comparison.json",
+    "original_sha256": "94ecfe191700982f676de4df33f808cd6f668d17424f9954c393d48a86afc92b",
+    "normalization": "Project-absolute paths made repository-relative; numeric and boolean records unchanged."
+  },
+  {
+    "published_file": "comparison_cached_metrics.json",
+    "original_local_source": "verification/handoff-evaluation-2026-11-09/results/comparison-metric-verification.json",
+    "original_sha256": "1400bd09f72a53e005d759a617eaac956b48a578c46f3d07f26e496960cc1f89",
+    "normalization": "Project-absolute paths made repository-relative; numeric and boolean records unchanged."
+  },
+  {
+    "published_file": "comparison_fresh_inference.json",
+    "original_local_source": "verification/handoff-evaluation-2026-11-09/results/fresh-inference-verification.json",
+    "original_sha256": "b5d7d4d1bb560e4a3e57581abdcbbdb59a84ad61904a735a861f981069f25b49",
+    "normalization": "Project-absolute paths made repository-relative; numeric and boolean records unchanged."
+  },
+  {
+    "published_file": "demo_fresh_runs.json",
+    "original_local_source": "verification/demo/validation-2026-11-09/verification.json",
+    "original_sha256": "9b1542cb88d3df244a4260a07e302a432426aec56c21003c826f09890940ac58",
+    "normalization": "Project-absolute paths made repository-relative; numeric and boolean records unchanged."
+  }
+]

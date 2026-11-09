@@ -1,0 +1,440 @@
+{
+  "tested_code_commit": "c9e571c8a8d386a79d580f67a5ddd5a994299db2",
+  "published_main_commit": "e61de6bc9e5fd0fe96de69380a041f9b56946737",
+  "source_copy": "Local git clone of the audit branch, with a newly installed .venv; no author source imports or venv reuse.",
+  "dependency_install": "requirements-notebooks.txt installed successfully; pip check passed",
+  "unit_tests_passed": 12,
+  "external_inputs": "Previously verified prepared validation/test PNGs and checkpoints copied to README paths; not a fresh full dataset download.",
+  "metrics_at_threshold_0_5": [
+    {
+      "model": "Baseline (BCE)",
+      "split": "val",
+      "metric": "iou",
+      "actual": 0.63380055556966,
+      "reference": 0.63380055556966,
+      "signed_difference": 0.0,
+      "equal_rounded_4": true
+    },
+    {
+      "model": "Baseline (BCE)",
+      "split": "val",
+      "metric": "dice",
+      "actual": 0.7758603746448987,
+      "reference": 0.7758603746448987,
+      "signed_difference": 0.0,
+      "equal_rounded_4": true
+    },
+    {
+      "model": "Baseline (BCE)",
+      "split": "test",
+      "metric": "iou",
+      "actual": 0.6898067288183954,
+      "reference": 0.6898067288183954,
+      "signed_difference": 0.0,
+      "equal_rounded_4": true
+    },
+    {
+      "model": "Baseline (BCE)",
+      "split": "test",
+      "metric": "dice",
+      "actual": 0.8164326926319506,
+      "reference": 0.8164326926319506,
+      "signed_difference": 0.0,
+      "equal_rounded_4": true
+    },
+    {
+      "model": "BCE + Dice",
+      "split": "val",
+      "metric": "iou",
+      "actual": 0.6159929978326506,
+      "reference": 0.6160168681146766,
+      "signed_difference": -2.387028202599506e-05,
+      "equal_rounded_4": true
+    },
+    {
+      "model": "BCE + Dice",
+      "split": "val",
+      "metric": "dice",
+      "actual": 0.7623708749466275,
+      "reference": 0.7623891560406194,
+      "signed_difference": -1.8281093991934227e-05,
+      "equal_rounded_4": true
+    },
+    {
+      "model": "BCE + Dice",
+      "split": "test",
+      "metric": "iou",
+      "actual": 0.6680798694327525,
+      "reference": 0.6680931815100744,
+      "signed_difference": -1.3312077321803173e-05,
+      "equal_rounded_4": true
+    },
+    {
+      "model": "BCE + Dice",
+      "split": "test",
+      "metric": "dice",
+      "actual": 0.8010166439571504,
+      "reference": 0.8010262123429697,
+      "signed_difference": -9.568385819225256e-06,
+      "equal_rounded_4": true
+    }
+  ],
+  "cache_checks": [
+    {
+      "model": "baseline",
+      "split": "val",
+      "patches": 144,
+      "identities_match": true,
+      "sha256": "d3125ae6ad82b2d5fb26d28fc426eb565a95401d56b9a4f5e62b6a838c98f58b"
+    },
+    {
+      "model": "baseline",
+      "split": "test",
+      "patches": 360,
+      "identities_match": true,
+      "sha256": "4e89ceeb6afafe220918ab1956603fb7773472d76569dc0f80a35077c960a2f0"
+    },
+    {
+      "model": "comparison",
+      "split": "val",
+      "patches": 144,
+      "identities_match": true,
+      "sha256": "4636c07f7b860d2b417e667c140131cb72b2a554a3f5879844c1917364d091e9"
+    },
+    {
+      "model": "comparison",
+      "split": "test",
+      "patches": 360,
+      "identities_match": true,
+      "sha256": "a7ecf038142e297b47dcf19fe5b8d603f91c82658fb171e27429bc852881782a"
+    }
+  ],
+  "published_baseline_masks_exact": 8,
+  "notebook_code_cells_completed_in_order": 14,
+  "generated_figures": [
+    "comparison_failure_examples.png",
+    "comparison_threshold_sensitivity.png",
+    "failure_comparison.png",
+    "threshold_sensitivity_all_models.png"
+  ],
+  "demo_checks": [
+    {
+      "model": "baseline",
+      "max_abs_difference_from_previous_verified_cpu": 0.0,
+      "fresh_forward": true
+    },
+    {
+      "model": "bce_dice",
+      "max_abs_difference_from_previous_verified_cpu": 0.0,
+      "fresh_forward": true
+    }
+  ],
+  "tracked_clean_copy_unchanged_after_execution": true,
+  "experimental_artifacts_unchanged_from_main": true,
+  "full_training_repeated": false,
+  "full_raw_download_and_sequential_notebook_02_repeated": false,
+  "preparation_function_check": {
+    "scope": "Existing notebook 02 functions only, not a full sequential notebook run.",
+    "source": "Previously restored Kaggle v2 evaluation PNGs; full 1.6 GB archive not downloaded again.",
+    "notebook_sha256": "df65a6b079166c7001d41051686fc6199ae8e8488a0797a3984d54abc3a0e797",
+    "checks": [
+      {
+        "split": "val",
+        "patches": 144,
+        "png_files": 288,
+        "split_csv_byte_identical": true,
+        "all_generated_pngs_byte_identical": true
+      },
+      {
+        "split": "test",
+        "patches": 360,
+        "png_files": 720,
+        "split_csv_byte_identical": true,
+        "all_generated_pngs_byte_identical": true
+      }
+    ],
+    "full_training_split_preparation_repeated": false
+  },
+  "sandbox_note": "Notebook initially could not bind loopback ports in sandbox; same command passed with local kernel ports permitted.",
+  "fresh_sensitivity_check": {
+    "rows": 12,
+    "all_checks": [
+      {
+        "model": "Baseline (BCE)",
+        "split": "val",
+        "threshold": 0.3,
+        "metric": "global_iou",
+        "actual": 0.6239059145046489,
+        "reference": 0.6239059145046489,
+        "difference": 0.0,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "Baseline (BCE)",
+        "split": "val",
+        "threshold": 0.3,
+        "metric": "global_dice",
+        "actual": 0.7684015544643954,
+        "reference": 0.7684015544643954,
+        "difference": 0.0,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "Baseline (BCE)",
+        "split": "val",
+        "threshold": 0.5,
+        "metric": "global_iou",
+        "actual": 0.63380055556966,
+        "reference": 0.63380055556966,
+        "difference": 0.0,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "Baseline (BCE)",
+        "split": "val",
+        "threshold": 0.5,
+        "metric": "global_dice",
+        "actual": 0.7758603746448987,
+        "reference": 0.7758603746448987,
+        "difference": 0.0,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "Baseline (BCE)",
+        "split": "val",
+        "threshold": 0.7,
+        "metric": "global_iou",
+        "actual": 0.5847329356737337,
+        "reference": 0.5847320133151152,
+        "difference": 9.223586185935773e-07,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "Baseline (BCE)",
+        "split": "val",
+        "threshold": 0.7,
+        "metric": "global_dice",
+        "actual": 0.7379576993837643,
+        "reference": 0.7379569648396375,
+        "difference": 7.345441268569175e-07,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "Baseline (BCE)",
+        "split": "test",
+        "threshold": 0.3,
+        "metric": "global_iou",
+        "actual": 0.6783499339819641,
+        "reference": 0.6783498097564059,
+        "difference": 1.2422555817348524e-07,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "Baseline (BCE)",
+        "split": "test",
+        "threshold": 0.3,
+        "metric": "global_dice",
+        "actual": 0.8083533954954756,
+        "reference": 0.8083533072939793,
+        "difference": 8.820149632882135e-08,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "Baseline (BCE)",
+        "split": "test",
+        "threshold": 0.5,
+        "metric": "global_iou",
+        "actual": 0.6898067288183954,
+        "reference": 0.6898067288183954,
+        "difference": 0.0,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "Baseline (BCE)",
+        "split": "test",
+        "threshold": 0.5,
+        "metric": "global_dice",
+        "actual": 0.8164326926319506,
+        "reference": 0.8164326926319506,
+        "difference": 0.0,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "Baseline (BCE)",
+        "split": "test",
+        "threshold": 0.7,
+        "metric": "global_iou",
+        "actual": 0.6440166341521502,
+        "reference": 0.6440168543903687,
+        "difference": -2.202382185512164e-07,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "Baseline (BCE)",
+        "split": "test",
+        "threshold": 0.7,
+        "metric": "global_dice",
+        "actual": 0.7834672968309491,
+        "reference": 0.7834674598019031,
+        "difference": -1.6297095406514472e-07,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "BCE + Dice",
+        "split": "val",
+        "threshold": 0.3,
+        "metric": "global_iou",
+        "actual": 0.6198693572750001,
+        "reference": 0.6198957773126438,
+        "difference": -2.642003764363743e-05,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "BCE + Dice",
+        "split": "val",
+        "threshold": 0.3,
+        "metric": "global_dice",
+        "actual": 0.7653325306650232,
+        "reference": 0.7653526677389473,
+        "difference": -2.013707392412023e-05,
+        "equal_rounded_4": false
+      },
+      {
+        "model": "BCE + Dice",
+        "split": "val",
+        "threshold": 0.5,
+        "metric": "global_iou",
+        "actual": 0.6159929978326506,
+        "reference": 0.6160168681146766,
+        "difference": -2.387028202599506e-05,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "BCE + Dice",
+        "split": "val",
+        "threshold": 0.5,
+        "metric": "global_dice",
+        "actual": 0.7623708749466275,
+        "reference": 0.7623891560406194,
+        "difference": -1.8281093991934227e-05,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "BCE + Dice",
+        "split": "val",
+        "threshold": 0.7,
+        "metric": "global_iou",
+        "actual": 0.5988237493989103,
+        "reference": 0.5988408486433443,
+        "difference": -1.7099244434048977e-05,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "BCE + Dice",
+        "split": "val",
+        "threshold": 0.7,
+        "metric": "global_dice",
+        "actual": 0.7490803781518038,
+        "reference": 0.7490937564567173,
+        "difference": -1.3378304913436168e-05,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "BCE + Dice",
+        "split": "test",
+        "threshold": 0.3,
+        "metric": "global_iou",
+        "actual": 0.6718480757492729,
+        "reference": 0.6718449925991656,
+        "difference": 3.083150107219268e-06,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "BCE + Dice",
+        "split": "test",
+        "threshold": 0.3,
+        "metric": "global_dice",
+        "actual": 0.803719052579787,
+        "reference": 0.8037168464459961,
+        "difference": 2.2061337909828893e-06,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "BCE + Dice",
+        "split": "test",
+        "threshold": 0.5,
+        "metric": "global_iou",
+        "actual": 0.6680798694327525,
+        "reference": 0.6680931815100744,
+        "difference": -1.3312077321803173e-05,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "BCE + Dice",
+        "split": "test",
+        "threshold": 0.5,
+        "metric": "global_dice",
+        "actual": 0.8010166439571504,
+        "reference": 0.8010262123429697,
+        "difference": -9.568385819225256e-06,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "BCE + Dice",
+        "split": "test",
+        "threshold": 0.7,
+        "metric": "global_iou",
+        "actual": 0.6472780770919896,
+        "reference": 0.6473015859492341,
+        "difference": -2.3508857244558534e-05,
+        "equal_rounded_4": true
+      },
+      {
+        "model": "BCE + Dice",
+        "split": "test",
+        "threshold": 0.7,
+        "metric": "global_dice",
+        "actual": 0.785875907769813,
+        "reference": 0.785893234694163,
+        "difference": -1.732692434996963e-05,
+        "equal_rounded_4": true
+      }
+    ],
+    "rounding_mismatches": [
+      {
+        "model": "BCE + Dice",
+        "split": "val",
+        "threshold": 0.3,
+        "metric": "global_dice",
+        "actual": 0.7653325306650232,
+        "reference": 0.7653526677389473,
+        "difference": -2.013707392412023e-05,
+        "equal_rounded_4": false
+      }
+    ],
+    "max_abs_difference_from_recorded": 2.642003764363743e-05,
+    "validation_selected_thresholds": {
+      "Baseline (BCE)": 0.5,
+      "BCE + Dice": 0.3
+    }
+  },
+  "released_comparison_cache_route": {
+    "completed_code_cells": 14,
+    "sensitivity_rows": 12,
+    "all_iou_dice_equal_rounded_4": true,
+    "max_abs_difference_from_recorded": 9.223586185935773e-07,
+    "comparison_main_metrics_match_exactly": true
+  },
+  "commands_from_clean_root": [
+    "python3.11 -m venv .venv",
+    ".venv/bin/python -m pip install -r requirements-notebooks.txt",
+    ".venv/bin/python -m pip check",
+    ".venv/bin/python -m unittest discover -s tests -v",
+    ".venv/bin/python -m ipykernel install --prefix .venv --name p22-local --display-name \"P22 Local\"",
+    ".venv/bin/python src/generate_baseline_probabilities.py --checkpoint results/baseline_unet_resnet18.pt --device cpu --output-dir verification/eval-inputs/baseline_probabilities",
+    ".venv/bin/python src/generate_baseline_probabilities.py --checkpoint verification/artifacts/comparison_unet_resnet18.pt --device cpu --output-dir verification/eval-inputs/comparison_probabilities",
+    "P22_RESULTS_ROOT=\"$PWD/verification/eval-inputs\" P22_EVAL_OUTPUT_ROOT=\"$PWD/verification/eval-rerun\" .venv/bin/python -m nbconvert --to notebook --execute --ExecutePreprocessor.kernel_name=p22-local --ExecutePreprocessor.timeout=600 --output-dir verification/eval-rerun notebooks/06_evaluation.ipynb",
+    "Same notebook command with eval-inputs-released and eval-rerun-released, preserving first outputs",
+    ".venv/bin/python scripts/demo_inference.py --indices 0 113 --device cpu --comparison-checkpoint verification/artifacts/comparison_unet_resnet18.pt --output-dir verification/demo-clean"
+  ]
+}

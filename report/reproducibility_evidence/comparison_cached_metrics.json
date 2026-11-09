@@ -1,0 +1,42 @@
+{
+  "scope": "Full validation 144 and test 360 patches from released cached probabilities",
+  "thresholds": [
+    0.3,
+    0.5,
+    0.7
+  ],
+  "formula": "Unmodified notebook 06 evaluate_thresholds",
+  "checks": [
+    {
+      "split": "val",
+      "metric": "iou",
+      "actual": 0.6160168681146766,
+      "reference": 0.6160168681146766,
+      "absolute_difference": 0.0
+    },
+    {
+      "split": "val",
+      "metric": "dice",
+      "actual": 0.7623891560406194,
+      "reference": 0.7623891560406194,
+      "absolute_difference": 0.0
+    },
+    {
+      "split": "test",
+      "metric": "iou",
+      "actual": 0.6680931815100744,
+      "reference": 0.6680931815100744,
+      "absolute_difference": 0.0
+    },
+    {
+      "split": "test",
+      "metric": "dice",
+      "actual": 0.8010262123429697,
+      "reference": 0.8010262123429697,
+      "absolute_difference": 0.0
+    }
+  ],
+  "all_sensitivity_rows_match_atol": 1e-15,
+  "training_reproduced": false,
+  "baseline_evaluation_reproduced": false
+}

@@ -1,0 +1,86 @@
+{
+  "metric_tables": [
+    {
+      "file": "comparison_threshold_sensitivity.csv",
+      "rows": 6,
+      "byte_identical": true,
+      "max_abs_numeric_difference": 0.0,
+      "all_numeric_values_exactly_equal": true,
+      "all_numeric_values_equal_rounded_4": true
+    },
+    {
+      "file": "threshold_sensitivity_all_models.csv",
+      "rows": 12,
+      "byte_identical": false,
+      "max_abs_numeric_difference": 9.223586185935773e-07,
+      "all_numeric_values_exactly_equal": false,
+      "all_numeric_values_equal_rounded_4": true
+    }
+  ],
+  "figures": [
+    {
+      "file": "comparison_failure_examples.png",
+      "regenerated_dimensions": [
+        3499,
+        3566
+      ],
+      "reference_dimensions": [
+        3502,
+        3569
+      ],
+      "byte_identical": false,
+      "regenerated_sha256": "943d82db094687536b440e315148dbf09293e6f0692443b96397cfe180370146",
+      "reference_sha256": "74ce663732a3f26981cb564ab825ce31717bdc407966d1a9c35a35fd1bf6e867",
+      "decoded_pixels_identical": false,
+      "different_rgba_pixels": null
+    },
+    {
+      "file": "comparison_threshold_sensitivity.png",
+      "regenerated_dimensions": [
+        3570,
+        1166
+      ],
+      "reference_dimensions": [
+        3570,
+        1168
+      ],
+      "byte_identical": false,
+      "regenerated_sha256": "4823e7c37f74570a9eb2c1eeb526bcaf01056922ee5b2fc1738d9ecf564266b7",
+      "reference_sha256": "232eec1bba5f0afb522affba2437fb0d87fca3a1585b3327588ba3de06a729e6",
+      "decoded_pixels_identical": false,
+      "different_rgba_pixels": null
+    },
+    {
+      "file": "failure_comparison.png",
+      "regenerated_dimensions": [
+        3136,
+        2380
+      ],
+      "reference_dimensions": [
+        3138,
+        2381
+      ],
+      "byte_identical": false,
+      "regenerated_sha256": "59cf0d59820de23994188f5ab42b1d83a371c07f0744723066b64b3102608196",
+      "reference_sha256": "1e20f75cd126d2e953fad82581939605bc43e75c01e95010057d332e1776fb30",
+      "decoded_pixels_identical": false,
+      "different_rgba_pixels": null
+    },
+    {
+      "file": "threshold_sensitivity_all_models.png",
+      "regenerated_dimensions": [
+        2380,
+        877
+      ],
+      "reference_dimensions": [
+        2380,
+        878
+      ],
+      "byte_identical": false,
+      "regenerated_sha256": "67b9abcb375bdcadd8fd6c4402f294815fe5111ea55c0fe7dca54b4605af01d4",
+      "reference_sha256": "039bb1c83841b48bf47bb18d69c9a56274aa434d314acbf2356da93b21717c87",
+      "decoded_pixels_identical": false,
+      "different_rgba_pixels": null
+    }
+  ]
+}

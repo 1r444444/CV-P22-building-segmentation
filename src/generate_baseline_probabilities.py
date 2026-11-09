@@ -1,4 +1,5 @@
 from pathlib import Path
+import argparse
 import sys
 
 import numpy as np
@@ -13,10 +14,6 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from src.preprocessing import load_and_preprocess
 
 
-DEVICE = torch.device(
-    "mps" if torch.backends.mps.is_available() else "cpu"
-)
-
 BATCH_SIZE = 8
 
 CHECKPOINT_PATH = PROJECT_ROOT / "results" / "baseline_unet_resnet18.pt"
@@ -24,8 +21,9 @@ OUTPUT_DIR = PROJECT_ROOT / "results" / "baseline_probabilities"
 
 
 class BuildingDataset(Dataset):
-    def __init__(self, dataframe):
+    def __init__(self, dataframe, data_root=PROJECT_ROOT):
         self.dataframe = dataframe.reset_index(drop=True)
+        self.data_root = data_root
 
     def __len__(self):
         return len(self.dataframe)
@@ -33,8 +31,8 @@ class BuildingDataset(Dataset):
     def __getitem__(self, idx):
         row = self.dataframe.iloc[idx]
 
-        image_path = PROJECT_ROOT / row["image_path"]
-        mask_path = PROJECT_ROOT / row["mask_path"]
+        image_path = self.data_root / row["image_path"]
+        mask_path = self.data_root / row["mask_path"]
 
         image, _ = load_and_preprocess(image_path, mask_path)
 
@@ -42,9 +40,27 @@ class BuildingDataset(Dataset):
 
 
 def main():
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    parser = argparse.ArgumentParser(description="Export U-Net + ResNet18 probabilities without training.")
+    parser.add_argument("--checkpoint", type=Path, default=CHECKPOINT_PATH)
+    parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
+    parser.add_argument("--data-root", type=Path, default=PROJECT_ROOT)
+    parser.add_argument("--splits-dir", type=Path, default=PROJECT_ROOT / "data/splits")
+    parser.add_argument("--splits", nargs="+", choices=["val", "test"], default=["val", "test"])
+    parser.add_argument("--limit", type=int, help="Smoke test only; exports the first N rows, not full-split metrics.")
+    parser.add_argument("--device", choices=["auto", "cuda", "mps", "cpu"], default="auto")
+    args = parser.parse_args()
+    if args.limit is not None and args.limit <= 0:
+        parser.error("--limit must be positive")
+    if not args.checkpoint.is_file():
+        parser.error(f"Missing checkpoint: {args.checkpoint}. See README.md for artifact handoff.")
+    if any((args.output_dir / f"{split}.npz").exists() for split in args.splits):
+        parser.error("Output already exists; choose a new --output-dir to preserve previous results.")
+    device_name = args.device
+    if device_name == "auto":
+        device_name = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
+    device = torch.device(device_name)
 
-    print("Device:", DEVICE)
+    print("Device:", device)
 
     model = smp.Unet(
         encoder_name="resnet18",
@@ -54,23 +70,25 @@ def main():
     )
 
     state_dict = torch.load(
-        CHECKPOINT_PATH,
+        args.checkpoint,
         map_location="cpu",
         weights_only=True,
     )
 
     model.load_state_dict(state_dict)
-    model = model.to(DEVICE)
+    model = model.to(device)
     model.eval()
 
-    print("Baseline checkpoint loaded.")
+    print("Checkpoint loaded:", args.checkpoint)
 
-    for split in ["val", "test"]:
+    for split in args.splits:
         df = pd.read_csv(
-            PROJECT_ROOT / "data" / "splits" / f"{split}.csv"
+            args.splits_dir / f"{split}.csv"
         )
+        if args.limit is not None:
+            df = df.head(args.limit)
 
-        dataset = BuildingDataset(df)
+        dataset = BuildingDataset(df, args.data_root)
 
         loader = DataLoader(
             dataset,
@@ -83,7 +101,7 @@ def main():
 
         with torch.inference_mode():
             for images in loader:
-                images = images.to(DEVICE)
+                images = images.to(device)
 
                 logits = model(images)
                 probabilities = torch.sigmoid(logits)
@@ -97,7 +115,8 @@ def main():
             axis=0,
         )
 
-        output_path = OUTPUT_DIR / f"{split}.npz"
+        args.output_dir.mkdir(parents=True, exist_ok=True)
+        output_path = args.output_dir / f"{split}.npz"
 
         np.savez_compressed(
             output_path,
